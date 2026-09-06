@@ -14,6 +14,8 @@
 /datum/emergency_call/clf/New()
 	. = ..()
 	objectives = "Assault the USCM, and sabotage as much as you can. Ensure any survivors escape in your custody."
+	if(type == /datum/emergency_call/clf)
+		objectives = "Capture the ship by seizing its astronavigation computer on the Astronavigational Deck. Hack the computer and upload New Xibou Outpost's coordinates. Keep the computer powered and defend it until it accepts the new course. Once docked, secure the ship. [objectives]"
 
 /datum/emergency_call/clf/print_backstory(mob/living/carbon/human/H)
 	if(ishuman_strict(H))

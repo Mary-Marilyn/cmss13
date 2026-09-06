@@ -36348,7 +36348,7 @@
 /area/almayer/shipboard/navigation)
 "bLp" = (
 /obj/structure/surface/table/almayer,
-/obj/item/paper_bin/uscm,
+/obj/structure/machinery/computer/astronav,
 /turf/open/floor/almayer/no_build,
 /area/almayer/shipboard/navigation)
 "bLq" = (
@@ -37292,12 +37292,12 @@
 /turf/open/floor/almayer/no_build/plate,
 /area/almayer/middeck/maintenance/sp)
 "bNS" = (
-/obj/structure/machinery/prop/almayer/computer{
-	dir = 1
-	},
 /obj/structure/surface/table/almayer,
 /obj/structure/machinery/light,
 /obj/effect/decal/cleanable/dirt,
+/obj/structure/machinery/computer/cameras/almayer_network{
+	dir = 1
+	},
 /turf/open/floor/almayer/no_build/plate,
 /area/almayer/shipboard/navigation)
 "bNT" = (

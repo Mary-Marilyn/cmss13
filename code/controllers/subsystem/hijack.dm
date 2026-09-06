@@ -20,6 +20,17 @@ SUBSYSTEM_DEF(hijack)
 	///The estimated time left to get to the safe evacuation point
 	var/estimated_time_left = 0
 
+	/// Only one hack attempt per round
+	var/hack_status = HIJACK_HACK_NOT_STARTED
+	var/obj/structure/machinery/computer/astronav/hack_console
+	var/datum/spaceport/hack_spaceport
+	var/hack_time_remaining = 0
+	var/hack_time_elapsed = 0
+	var/hack_announce_checkpoint = 25
+	var/hack_glitch_stage = 0
+	/// When the hack finished
+	var/hack_end_time = 0
+
 	///Areas that are marked as having progress, assoc list that is progress_area = boolean, the boolean indicating if it was progressing or not on the last fire()
 	var/list/area/progress_areas = list()
 
@@ -140,7 +151,11 @@ SUBSYSTEM_DEF(hijack)
 /datum/controller/subsystem/hijack/Initialize(timeofday)
 	RegisterSignal(SSdcs, COMSIG_GLOB_GENERATOR_SET_OVERLOADING, PROC_REF(on_generator_overload))
 
-	var/spaceport_to_use = pick(subtypesof(/datum/spaceport))
+	var/list/options = list()
+	for(var/datum/spaceport/spaceport_type as anything in subtypesof(/datum/spaceport))
+		if(!initial(spaceport_type.hostile))
+			options += spaceport_type
+	var/spaceport_to_use = pick(options)
 	spaceport = new spaceport_to_use
 
 	return SS_INIT_SUCCESS
@@ -158,7 +173,13 @@ SUBSYSTEM_DEF(hijack)
 	return ..()
 
 /datum/controller/subsystem/hijack/fire(resumed = FALSE)
+	// Also process while the hijacked dropship is inbound
+	if(!resumed)
+		process_hostile_hack()
 	if(!SSticker?.mode?.is_in_endgame)
+		return
+	if(SSticker.current_state == GAME_STATE_FINISHED)
+		can_fire = FALSE
 		return
 
 	if(hijack_status < HIJACK_OBJECTIVES_STARTED)
@@ -213,7 +234,7 @@ SUBSYSTEM_DEF(hijack)
 					spark.start()
 		return
 
-	if(!SSticker.mode.count_marines(SSmapping.levels_by_trait(ZTRAIT_MARINE_MAIN_SHIP)))
+	if(hack_status != HIJACK_HACK_ACTIVE && hack_status != HIJACK_HACK_COMPLETE && !SSticker.mode.count_marines(SSmapping.levels_by_trait(ZTRAIT_MARINE_MAIN_SHIP)))
 		// All marines dead, stop objective progression
 		if(in_ftl || hijack_status == HIJACK_OBJECTIVES_STARTED)
 			shipwide_ai_announcement("No USCM life signs detected on board. [in_ftl ? "Maintaining course to [spaceport.name]." : "Deactivating hyperdrive charge cycle."]")
@@ -288,10 +309,14 @@ SUBSYSTEM_DEF(hijack)
 
 		last_run_progress_change = current_run_progress_additive * current_run_progress_multiplicative
 		current_progress += last_run_progress_change
+		if(hack_status == HIJACK_HACK_COMPLETE && world.time < hack_end_time + HIJACK_HACK_FTL_BUFFER)
+			current_progress = min(current_progress, required_progress - 0.01)
 
 		if(last_run_progress_change)
 			// There was progress, update time left
 			estimated_time_left = ((required_progress - current_progress) / last_run_progress_change) * wait
+			if(hack_status == HIJACK_HACK_COMPLETE)
+				estimated_time_left = max(estimated_time_left, hack_end_time + HIJACK_HACK_FTL_BUFFER - world.time)
 		else
 			// Failure!
 			estimated_time_left = INFINITY
@@ -309,6 +334,105 @@ SUBSYSTEM_DEF(hijack)
 
 		current_run_progress_additive = 0
 		current_run_progress_multiplicative = 1
+
+/// FTL time left after the next fueling update
+/datum/controller/subsystem/hijack/proc/get_hack_ftl_time_left()
+	if(hijack_status != HIJACK_OBJECTIVES_STARTED || !can_fire || last_run_progress_change <= 0)
+		return INFINITY
+	return max(0, estimated_time_left - wait)
+
+/datum/controller/subsystem/hijack/proc/start_hostile_hack(obj/structure/machinery/computer/astronav/console, mob/living/carbon/human/user)
+	if(!istype(user) || !user.ert_type)
+		to_chat(user, SPAN_WARNING(isxeno(user) ? "You cannot make sense of the lights on the machine" : "You don't have the access codes needed to alter the ship's course."))
+		return FALSE
+	var/spaceport_to_use
+	switch(user.ert_type)
+		if(/datum/emergency_call/clf)
+			spaceport_to_use = /datum/spaceport/clf
+		if(/datum/emergency_call/upp, /datum/emergency_call/upp/hostile)
+			spaceport_to_use = /datum/spaceport/upp/hostile
+		if(/datum/emergency_call/mercs, /datum/emergency_call/mercs/hostile)
+			spaceport_to_use = /datum/spaceport/vanguard/lancer/hostile
+		if(/datum/emergency_call/wy_commando/hostile)
+			spaceport_to_use = /datum/spaceport/pmc/hostile
+	if(!spaceport_to_use)
+		to_chat(user, SPAN_WARNING("You don't have the codes to re-route the FTL navigation."))
+		return FALSE
+	if(hijack_status <= HIJACK_OBJECTIVES_NOT_STARTED || hijack_status > HIJACK_OBJECTIVES_STARTED || sd_detonated || SSticker.current_state == GAME_STATE_FINISHED)
+		to_chat(user, SPAN_WARNING("ARES has locked the course controls. The emergency navigation is offline."))
+		return FALSE
+	if(console.inoperable() || !console.powered())
+		to_chat(user, SPAN_WARNING("The terminal is unresponsive. It cannot establish a connection to the flight computer."))
+		return FALSE
+	var/time_left = FLOOR(get_hack_ftl_time_left() - HIJACK_HACK_FTL_BUFFER, wait)
+	if(time_left <= 0)
+		to_chat(user, SPAN_WARNING("The flight computer is preparing to leave hyperspace. It rejects your course correction."))
+		return FALSE
+
+	hack_status = HIJACK_HACK_ACTIVE
+	// Resume fueling if all marines are dead
+	can_fire = TRUE
+	hack_console = console
+	hack_spaceport = new spaceport_to_use
+	hack_time_remaining = min(HIJACK_HACK_DURATION, time_left)
+	to_chat(user, SPAN_WARNING("You enter the access codes and load the coordinates for [hack_spaceport.name]. The terminal begins feeding the new flight plan to ARES. Estimated transfer time: [ceil(hack_time_remaining / (1 SECONDS))] seconds. The console must remain powered until the transfer is complete."))
+	shipwide_ai_announcement("SECURITY ALERT. Unauthorized access to flight control detected on the Astronavigational Deck.", HIJACK_ANNOUNCE)
+	xeno_announcement("My children. The hosts are changing this metal hive's course. Stop them in the navigation chamber.", "everything", SPAN_ANNOUNCEMENT_HEADER_BLUE("Queen Mother Psychic Directive"))
+	log_game("[key_name(user)] started a hostile navigation upload to [hack_spaceport.name] at [AREACOORD(console)].")
+	message_admins("[key_name_admin(user)] started a hostile navigation upload to [hack_spaceport.name] at [ADMIN_VERBOSEJMP(console)].")
+	return TRUE
+
+/datum/controller/subsystem/hijack/proc/process_hostile_hack()
+	if(hack_status != HIJACK_HACK_ACTIVE)
+		return
+	if(QDELETED(hack_console) || hijack_status <= HIJACK_OBJECTIVES_NOT_STARTED || hijack_status > HIJACK_OBJECTIVES_STARTED || sd_detonated || SSticker.current_state == GAME_STATE_FINISHED)
+		stop_hostile_hack()
+		return
+
+	var/time_left = get_hack_ftl_time_left() - HIJACK_HACK_FTL_BUFFER
+	if(time_left < 0)
+		stop_hostile_hack("Hyperspace exit sequence initiated. Incomplete flight plan discarded. Navigation inputs locked for final approach.")
+		return
+
+	if(hack_console.inoperable() || !hack_console.powered())
+		return
+	hack_time_remaining -= wait
+	hack_time_elapsed += wait
+
+	// Round down so the hack finishes before FTL
+	hack_time_remaining = max(0, min(hack_time_remaining, FLOOR(time_left, wait)))
+	var/duration = hack_time_elapsed + hack_time_remaining
+	var/progress = hack_time_elapsed / duration * 100
+	while(hack_announce_checkpoint <= 75 && progress >= hack_announce_checkpoint)
+		shipwide_ai_announcement("SECURITY ALERT. Unauthorized flight plan transfer [hack_announce_checkpoint]% complete. Astronavigational Deck remains compromised.", HIJACK_ANNOUNCE)
+		hack_announce_checkpoint += 25
+
+	var/glitch_time = min(10 SECONDS, duration)
+	while(hack_glitch_stage < 3 && hack_time_remaining <= glitch_time * (1 - hack_glitch_stage * 0.4))
+		hack_glitch_stage++
+		switch(hack_glitch_stage)
+			if(1)
+				shipwide_ai_announcement("WARNING. Unauthorized flight plan. Access denied. Access de-denied. Access...", HIJACK_ANNOUNCE)
+			if(2)
+				shipwide_ai_announcement("Navigation safeguards failing. Restoring approved course. Restoring... original destination not found.", HIJACK_ANNOUNCE)
+			if(3)
+				shipwide_ai_announcement("ARES command priority... overridden. New flight plan awaiting authentication. Please stand by.", HIJACK_ANNOUNCE)
+
+	if(hack_time_remaining <= 0)
+		hack_status = HIJACK_HACK_COMPLETE
+		hack_end_time = world.time
+		QDEL_NULL(spaceport)
+		spaceport = hack_spaceport
+		hack_spaceport = null
+		shipwide_ai_announcement("New coordinates accepted. Destination: [spaceport.name]. Course locked. Local navigation controls disengaged.", HIJACK_ANNOUNCE)
+		log_game("Hostile navigation upload completed. The ship is now bound for [spaceport.name].")
+
+/datum/controller/subsystem/hijack/proc/stop_hostile_hack(message = "Navigation fault detected. Flight computer retaining last verified course.")
+	if(hack_status != HIJACK_HACK_ACTIVE)
+		return
+	hack_status = HIJACK_HACK_LOCKED
+	QDEL_NULL(hack_spaceport)
+	shipwide_ai_announcement(message, HIJACK_ANNOUNCE)
 
 ///Called when the dropship has been called by the xenos
 /datum/controller/subsystem/hijack/proc/on_call_shuttle()

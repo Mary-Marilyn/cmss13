@@ -12,6 +12,8 @@
 	if(hostility)
 		arrival_message = "Lovely ship you've got there. Arikara class, huh? Don't mind if we do. \n\nThis is Freelancer shuttle [pick(GLOB.alphabet_lowercase)][pick(GLOB.alphabet_lowercase)]-[rand(1, 99)] responding to your distress. Prepare your valuables for boarding."
 		objectives = "Ransack the [MAIN_SHIP_NAME] and kill anyone who gets in your way. Do what your Warlord says. Ensure your survival at all costs."
+		if(type == /datum/emergency_call/mercs || type == /datum/emergency_call/mercs/hostile)
+			objectives = "Take the ship itself as your prize. Seize its astronavigation computer on the Astronavigational Deck. Hack the computer and upload Port Gallows' coordinates. Keep the computer powered and defend it until it accepts the new course. Once docked, secure the ship and its valuables. [objectives]"
 	else
 		arrival_message = "[MAIN_SHIP_NAME], this is Freelancer shuttle [pick(GLOB.alphabet_lowercase)][pick(GLOB.alphabet_lowercase)]-[rand(1, 99)] responding to your distress call. Prepare for boarding."
 		objectives = "Help the crew of the [MAIN_SHIP_NAME] in exchange for payment, and choose your payment well. Do what your Warlord says. Ensure your survival at all costs."

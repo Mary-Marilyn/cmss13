@@ -55,6 +55,20 @@
 	to_chat(M, SPAN_BOLD("Ensure no damage is incurred against Weyland-Yutani. Make sure the CL is safe."))
 	to_chat(M, SPAN_BOLD("Deny Weyland-Yutani's involvement and do not trust the UA/USCM forces."))
 
+/datum/emergency_call/wy_commando/hostile
+	name = "Hostile Weyland-Yutani Commando (Squad)"
+	probability = 10
+	hostility = TRUE
+
+/datum/emergency_call/wy_commando/hostile/New()
+	..()
+	arrival_message = static_message
+	objectives = "Seize the [MAIN_SHIP_NAME]'s astronavigation computer on the Astronavigational Deck. Hack the computer and upload the Royce's coordinates. Keep the computer powered and defend until it accepts the new course. Once docked, secure the ship and eliminate any resistance."
+
+/datum/emergency_call/wy_commando/hostile/print_backstory(mob/living/carbon/human/M)
+	..()
+	to_chat(M, SPAN_WARNING(FONT_SIZE_HUGE("The Directorate has authorized the seizure of this USCM vessel. Compel the crew's surrender and use lethal force against any resistance.")))
+
 /datum/emergency_call/wy_commando/platoon
 	name = "Weyland-Yutani Commando (Platoon)"
 	mob_min = 8

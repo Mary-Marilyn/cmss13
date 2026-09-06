@@ -51,6 +51,8 @@
 	var/origin = ""
 	var/personal_faction = ""
 	var/religion = ""
+	/// Hostile ERT type, if any
+	var/ert_type
 
 	//Equipment slots
 	var/obj/item/clothing/suit/wear_suit = null

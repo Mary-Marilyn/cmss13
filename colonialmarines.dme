@@ -1041,6 +1041,7 @@
 #include "code\game\machinery\computer\almayer_control.dm"
 #include "code\game\machinery\computer\arcade.dm"
 #include "code\game\machinery\computer\area_air_control.dm"
+#include "code\game\machinery\computer\astronav.dm"
 #include "code\game\machinery\computer\atmos_alert.dm"
 #include "code\game\machinery\computer\buildandrepair.dm"
 #include "code\game\machinery\computer\camera_console.dm"

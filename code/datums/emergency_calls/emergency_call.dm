@@ -357,6 +357,7 @@
 	for(var/datum/mind/spawned as anything in members)
 		if(ishuman(spawned.current))
 			var/mob/living/carbon/human/spawned_human = spawned.current
+			spawned_human.ert_type = hostility ? type : null
 			var/obj/item/card/id/id = spawned_human.get_idcard()
 			if(id)
 				ADD_TRAIT(id, TRAIT_ERT_ID, src)

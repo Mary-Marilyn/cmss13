@@ -25,7 +25,7 @@
 		hostility = pick(50;FALSE,50;TRUE)
 	arrival_message = "[MAIN_SHIP_NAME] t*is i* UP* d^sp^*ch`. STr*&e teaM, #*u are cLe*% for a*pr*%^h. Pr*mE a*l wE*p^ns and pR*epr# t% r@nd$r a(tD."
 	if(hostility)
-		objectives = "Eliminate the UA Forces to ensure the UPP presence in this sector is continued. Listen to your superior officers and take over the [MAIN_SHIP_NAME] at all costs."
+		objectives = "Seize the [MAIN_SHIP_NAME]'s astronavigation computer on the Astronavigational Deck. Hack the computer and upload Altai Station's coordinates. Keep the computer powered and defend it until it accepts the new course. Once docked, secure the ship and eliminate any resistance. Eliminate the UA Forces to ensure the UPP presence in this sector is continued. Listen to your superior officers and take over the [MAIN_SHIP_NAME] at all costs."
 	else
 		objectives = "Render assistance towards the UA Forces, do not engage UA forces. Listen to your superior officers."
 
@@ -111,7 +111,6 @@
 /datum/emergency_call/upp/hostile/New()
 	..()
 	arrival_message = "[MAIN_SHIP_NAME] t*is i* UP* d^sp^*ch`. STr*&e teaM, #*u are cLe*% for a*pr*%^h. Pr*mE a*l wE*p^ns and pR*epr# t% r@nd$r a(tD."
-	objectives = "Eliminate the UA Forces to ensure the UPP presence in this sector is continued. Listen to your superior officers and take over the [MAIN_SHIP_NAME] at all costs."
 
 /datum/emergency_call/upp/friendly //ditto
 	name = "UPP Naval Infantry (Squad) (Friendly)"
