@@ -789,9 +789,14 @@
 					message_admins("3rd party victory: Union of Progressive Peoples")
 				else if ((headcount["CLF_headcount"] / living) > MAJORITY)
 					musical_track = pick('sound/theme/lastmanstanding_clf.ogg')
-					end_icon = "upp_major"
+					end_icon = "clf_major"
 					log_game("3rd party victory: Colonial Liberation Front")
 					message_admins("3rd party victory: Colonial Liberation Front")
+				else if ((headcount["TWE_headcount"] / living) > MAJORITY)
+					musical_track = pick('sound/theme/lastmanstanding_twe.ogg')
+					end_icon = "twe_major"
+					log_game("3rd party victory: Three World Empire")
+					message_admins("3rd party victory: Three World Empire")
 				else if ((headcount["marine_headcount"] / living) > MAJORITY)
 					musical_track = pick('sound/theme/neutral_melancholy2.ogg') //This is the theme song for Colonial Marines the game, fitting
 			else
