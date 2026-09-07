@@ -380,7 +380,7 @@ SUBSYSTEM_DEF(hijack)
 	hack_time_remaining = min(HIJACK_HACK_DURATION, time_left)
 	to_chat(user, SPAN_WARNING("You enter the access codes and load the coordinates for [hack_spaceport.name]. The terminal begins feeding the new flight plan to ARES. Estimated transfer time: [ceil(hack_time_remaining / (1 SECONDS))] seconds. The console must remain powered until the transfer is complete."))
 	shipwide_ai_announcement("SECURITY ALERT. Unauthorized access to flight control detected on the Astronavigational Deck.", HIJACK_ANNOUNCE)
-	xeno_announcement("My children. The hosts are changing this metal hive's course. Stop them in the navigation chamber.", "everything", SPAN_ANNOUNCEMENT_HEADER_BLUE("Queen Mother Psychic Directive"))
+	xeno_announcement("My children. The hosts are changing this metal hive's course. Stop them in the navigation chamber.", "everything", SPAN_ANNOUNCEMENT_HEADER_BLUE(QUEEN_MOTHER_ANNOUNCE))
 	log_game("[key_name(user)] started a hostile navigation upload to [hack_spaceport.name] at [AREACOORD(console)].")
 	message_admins("[key_name_admin(user)] started a hostile navigation upload to [hack_spaceport.name] at [ADMIN_VERBOSEJMP(console)].")
 	return TRUE
