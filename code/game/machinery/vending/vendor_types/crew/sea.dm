@@ -29,20 +29,34 @@ GLOBAL_LIST_INIT(cm_vending_gear_sea, list(
 
 GLOBAL_LIST_INIT(cm_vending_clothing_sea, list(
 		list("STANDARD EQUIPMENT (TAKE ALL)", 0, null, null, null),
-		list("Drill Hat", 0, /obj/item/clothing/head/drillhat, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_RECOMMENDED),
 		list("Officer Uniform", 0, /obj/item/clothing/under/marine/dress, MARINE_CAN_BUY_UNIFORM, VENDOR_ITEM_MANDATORY),
 		list("Operations Uniform", 0, /obj/item/clothing/under/marine/officer/boiler, MARINE_CAN_BUY_UNIFORM, VENDOR_ITEM_MANDATORY),
 		list("USCM Service Jacket", 0, /obj/item/clothing/suit/storage/jacket/marine/service, MARINE_CAN_BUY_ARMOR, VENDOR_ITEM_REGULAR),
 		list("External Webbing", 0, /obj/item/clothing/suit/storage/webbing, MARINE_CAN_BUY_ARMOR, VENDOR_ITEM_REGULAR),
-		list("Marine Combat Boots", 0, /obj/item/clothing/shoes/marine/knife, MARINE_CAN_BUY_SHOES, VENDOR_ITEM_MANDATORY),
 		list("Satchel", 0, /obj/item/storage/backpack/satchel/lockable, MARINE_CAN_BUY_BACKPACK, VENDOR_ITEM_MANDATORY),
 		list("MRE", 0, /obj/item/storage/box/mre, MARINE_CAN_BUY_MRE, VENDOR_ITEM_MANDATORY),
 		list("Trench Whistle", 0, /obj/item/clothing/accessory/device/whistle/trench, MARINE_CAN_BUY_ESSENTIALS, VENDOR_ITEM_MANDATORY),
 
+		list("HEADWEAR (CHOOSE 1)", 0, null, null, null),
+		list("Drill Hat", 0, /obj/item/clothing/head/drillhat, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_RECOMMENDED),
+		list("Jungle Drill Hat", 0, /obj/item/clothing/head/drillhat/jungle, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_REGULAR),
+		list("Classic Drill Hat", 0, /obj/item/clothing/head/drillhat/classic, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_REGULAR),
+		list("Desert Drill Hat", 0, /obj/item/clothing/head/drillhat/desert, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_REGULAR),
+		list("Snow Drill Hat", 0, /obj/item/clothing/head/drillhat/snow, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_REGULAR),
+		list("Urban Drill Hat", 0, /obj/item/clothing/head/drillhat/urban, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_REGULAR),
+		list("Formal Service Drill Hat", 0, /obj/item/clothing/head/drillhat/service, MARINE_CAN_BUY_HELMET, VENDOR_ITEM_REGULAR),
+
 		list("GLOVES (CHOOSE 1)", 0, null, null, null),
 		list("Insulated Gloves", 0, /obj/item/clothing/gloves/yellow, MARINE_CAN_BUY_GLOVES, VENDOR_ITEM_REGULAR),
 		list("Marine Combat Gloves", 0, /obj/item/clothing/gloves/marine, MARINE_CAN_BUY_GLOVES, VENDOR_ITEM_REGULAR),
+		list("Marine Brown Combat Gloves", 0, /obj/item/clothing/gloves/marine/brown, MARINE_CAN_BUY_GLOVES, VENDOR_ITEM_REGULAR),
+		list("Marine Grey Combat Gloves", 0, /obj/item/clothing/gloves/marine/grey, MARINE_CAN_BUY_GLOVES, VENDOR_ITEM_REGULAR),
 		list("Insulated Combat Gloves", 0, /obj/item/clothing/gloves/marine/insulated/black, MARINE_CAN_BUY_GLOVES, VENDOR_ITEM_REGULAR),
+
+		list("FOOTWEAR (CHOOSE 1)", 0, null, null, null),
+		list("Marine Combat Boots", 0, /obj/item/clothing/shoes/marine/knife, MARINE_CAN_BUY_SHOES, VENDOR_ITEM_RECOMMENDED),
+		list("Marine Brown Combat Boots", 0, /obj/item/clothing/shoes/marine/brown/knife, MARINE_CAN_BUY_SHOES, VENDOR_ITEM_REGULAR),
+		list("Marine Grey Combat Boots", 0, /obj/item/clothing/shoes/marine/grey/knife, MARINE_CAN_BUY_SHOES, VENDOR_ITEM_REGULAR),
 
 		list("BELT (CHOOSE 1)", 0, null, null, null),
 		list("G8-A General Utility Pouch", 0, /obj/item/storage/backpack/general_belt, MARINE_CAN_BUY_BELT, VENDOR_ITEM_REGULAR),
