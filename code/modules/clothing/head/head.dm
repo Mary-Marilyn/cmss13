@@ -1225,55 +1225,6 @@ GLOBAL_LIST_INIT(allowed_hat_items, list(
 		WEAR_R_HAND = 'icons/mob/humans/onmob/inhands/clothing/hats_righthand.dmi'
 	)
 
-/obj/item/clothing/head/drillhat/jungle
-	name = "\improper USCM jungle drill hat"
-	icon = 'icons/obj/items/clothing/hats/hats_by_map/jungle.dmi'
-	item_icons = list(
-		WEAR_HEAD = 'icons/mob/humans/onmob/clothing/head/hats_by_map/jungle.dmi',
-		WEAR_L_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/jungle_lefthand.dmi',
-		WEAR_R_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/jungle_righthand.dmi'
-	)
-
-/obj/item/clothing/head/drillhat/classic
-	name = "\improper USCM classic drill hat"
-	icon = 'icons/obj/items/clothing/hats/hats_by_map/classic.dmi'
-	item_icons = list(
-		WEAR_HEAD = 'icons/mob/humans/onmob/clothing/head/hats_by_map/classic.dmi',
-		WEAR_L_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/classic_lefthand.dmi',
-		WEAR_R_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/classic_righthand.dmi'
-	)
-
-/obj/item/clothing/head/drillhat/desert
-	name = "\improper USCM desert drill hat"
-	icon = 'icons/obj/items/clothing/hats/hats_by_map/desert.dmi'
-	item_icons = list(
-		WEAR_HEAD = 'icons/mob/humans/onmob/clothing/head/hats_by_map/desert.dmi',
-		WEAR_L_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/desert_lefthand.dmi',
-		WEAR_R_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/desert_righthand.dmi'
-	)
-
-/obj/item/clothing/head/drillhat/snow
-	name = "\improper USCM snow drill hat"
-	icon = 'icons/obj/items/clothing/hats/hats_by_map/snow.dmi'
-	item_icons = list(
-		WEAR_HEAD = 'icons/mob/humans/onmob/clothing/head/hats_by_map/snow.dmi',
-		WEAR_L_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/snow_lefthand.dmi',
-		WEAR_R_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/snow_righthand.dmi'
-	)
-
-/obj/item/clothing/head/drillhat/urban
-	name = "\improper USCM urban drill hat"
-	icon = 'icons/obj/items/clothing/hats/hats_by_map/urban.dmi'
-	item_icons = list(
-		WEAR_HEAD = 'icons/mob/humans/onmob/clothing/head/hats_by_map/urban.dmi',
-		WEAR_L_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/urban_lefthand.dmi',
-		WEAR_R_HAND = 'icons/mob/humans/onmob/inhands/items_by_map/urban_righthand.dmi'
-	)
-
-/obj/item/clothing/head/drillhat/service
-	name = "\improper USCM formal service drill hat"
-	icon_state = "drillhat_service"
-
 /obj/item/clothing/head/cavalry
 	name = "\improper US cavalry hat"
 	desc = "Also known as Cavalry Stetson, this hat is a symbol of tradition and remembrance of heroism that is ongoing from as far as 19th century. Even though cavalry division had cashed in its horses for choppers, choppers for dropships, and gone tear-assing around space, looking for the shit."
