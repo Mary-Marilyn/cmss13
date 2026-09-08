@@ -204,6 +204,11 @@
 				marine_rk = "nurse"
 			if(JOB_SEA)
 				marine_rk = "sea"
+				switch(id_card?.paygrade)
+					if(PAY_SHORT_ME8, PAY_SHORT_ME8E)
+						marine_rk = "sea_e8"
+					if(PAY_SHORT_ME9, PAY_SHORT_ME9E, PAY_SHORT_ME9C)
+						marine_rk = "sea_e9"
 			if(JOB_SYNTH, JOB_WO_SYNTH)
 				marine_rk = "syn"
 				var/datum/equipment_preset/synth/preset = current_human.assigned_equipment_preset

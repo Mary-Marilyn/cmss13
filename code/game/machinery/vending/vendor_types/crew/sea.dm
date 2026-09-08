@@ -33,6 +33,7 @@ GLOBAL_LIST_INIT(cm_vending_clothing_sea, list(
 		list("Officer Uniform", 0, /obj/item/clothing/under/marine/dress, MARINE_CAN_BUY_UNIFORM, VENDOR_ITEM_MANDATORY),
 		list("Operations Uniform", 0, /obj/item/clothing/under/marine/officer/boiler, MARINE_CAN_BUY_UNIFORM, VENDOR_ITEM_MANDATORY),
 		list("USCM Service Jacket", 0, /obj/item/clothing/suit/storage/jacket/marine/service, MARINE_CAN_BUY_ARMOR, VENDOR_ITEM_REGULAR),
+		list("SEA Service Jacket", 0, /obj/item/clothing/suit/storage/jacket/marine/sea, MARINE_CAN_BUY_ARMOR, VENDOR_ITEM_REGULAR),
 		list("External Webbing", 0, /obj/item/clothing/suit/storage/webbing, MARINE_CAN_BUY_ARMOR, VENDOR_ITEM_REGULAR),
 		list("Marine Combat Boots", 0, /obj/item/clothing/shoes/marine/knife, MARINE_CAN_BUY_SHOES, VENDOR_ITEM_MANDATORY),
 		list("Satchel", 0, /obj/item/storage/backpack/satchel/lockable, MARINE_CAN_BUY_BACKPACK, VENDOR_ITEM_MANDATORY),

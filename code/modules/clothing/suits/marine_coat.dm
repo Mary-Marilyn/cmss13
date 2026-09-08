@@ -166,6 +166,18 @@
 	)
 	flags_atom = NO_GAMEMODE_SKIN
 
+/obj/item/clothing/suit/storage/jacket/marine/sea
+	name = "senior enlisted advisor's jacket"
+	desc = "An olive-brown service jacket worn by senior enlisted advisors of the USCM. The sleeves are permanently creased from folding one's arms in disappointment."
+	icon_state = "sea_jacket"
+	icon = 'icons/obj/items/clothing/suits/suits_by_faction/UA.dmi'
+	item_icons = list(
+		WEAR_JACKET = 'icons/mob/humans/onmob/clothing/suits/suits_by_faction/UA.dmi',
+		WEAR_L_HAND = 'icons/mob/humans/onmob/inhands/clothing/suits_lefthand.dmi',
+		WEAR_R_HAND = 'icons/mob/humans/onmob/inhands/clothing/suits_righthand.dmi'
+	)
+	flags_atom = FPRINT|NO_GAMEMODE_SKIN
+
 /obj/item/clothing/suit/storage/jacket/marine/service/mp
 	name = "military police service jacket"
 	desc = "A marine service jacket adopted for use by Military Police personnel on board USCM ships. Ironically most ships require their MP departments to use full armor, making these barely used by on duty MPs. This variant is also available to regular Marines, if they are willing to bear the shame."
