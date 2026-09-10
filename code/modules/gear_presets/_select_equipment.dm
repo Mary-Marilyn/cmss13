@@ -183,7 +183,7 @@
 	if(!istype(src, /datum/equipment_preset/uscm) && !istype(src, /datum/equipment_preset/uscm_ship) && !istype(src, /datum/equipment_preset/uscm_co))
 		return
 
-	if(!(flags & EQUIPMENT_PRESET_MARINE) || faction != FACTION_MARINE || issynth(new_human) || !is_mainship_level(new_human.z))
+	if(!(flags & EQUIPMENT_PRESET_MARINE) || faction != FACTION_MARINE || !is_mainship_level(new_human.z))
 		return
 
 	var/datum/entity/player/player = new_human.client?.player_data
