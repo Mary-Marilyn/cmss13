@@ -70,7 +70,7 @@
 			<h2>Names to remember</h2>
 			<p>
 				<img src="/logo_wy.png" alt="Weyland-Yutani corporate logo" width="78" height="29">
-				<strong>Weyland-Yutani Corporation (W-Y):</strong>, Commonly called "the Company" A leading corporation in
+				<strong>Weyland-Yutani Corporation (W-Y):</strong> Commonly called "the Company" A leading corporation in
 				colonization, shipping, industry, and technology, and a valued supplier to the USCM. Company equipment,
 				transport, and technical expertise help keep our colonies running and our Marines supplied.
 			</p>
