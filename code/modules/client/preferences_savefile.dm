@@ -425,6 +425,7 @@
 	S["hotkeys"] >> hotkeys
 
 	S["custom_cursors"] >> custom_cursors
+	S["mouse_ammo_counter"] >> mouse_ammo_counter
 	S["autofit_viewport"] >> auto_fit_viewport
 	S["adaptive_zoom"] >> adaptive_zoom
 	S["tooltips"] >> tooltips
@@ -580,6 +581,7 @@
 	key_bindings = sanitize_keybindings(key_bindings)
 	hotkeys = sanitize_integer(hotkeys, FALSE, TRUE, TRUE)
 	custom_cursors = sanitize_integer(custom_cursors, FALSE, TRUE, TRUE)
+	mouse_ammo_counter = sanitize_integer(mouse_ammo_counter, FALSE, TRUE, TRUE)
 	pref_special_job_options = sanitize_islist(pref_special_job_options, list())
 	pref_job_slots = sanitize_islist(pref_job_slots, list())
 
@@ -722,6 +724,7 @@
 	S["no_radials_preference"] << no_radials_preference
 	S["no_radial_labels_preference"] << no_radial_labels_preference
 	S["custom_cursors"] << custom_cursors
+	S["mouse_ammo_counter"] << mouse_ammo_counter
 
 	S["completed_tutorials"] << tutorial_list_to_savestring()
 

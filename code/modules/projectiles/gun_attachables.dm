@@ -3092,6 +3092,7 @@ Defined in conflicts.dm of the #defines folder.
 		icon_state += "-on"
 
 	SEND_SIGNAL(G, COMSIG_GUN_INTERRUPT_FIRE)
+	G.update_ammo_counter()
 
 	for(var/X in G.actions)
 		var/datum/action/A = X

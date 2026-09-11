@@ -955,6 +955,26 @@ world
 	else
 		return humanoid_icon_cache[icon_id]
 
+/proc/get_ammo_cursor(cursor_icon, rounds)
+	var/counter_text = "[rounds]"
+	var/static/list/ammo_cursors = list()
+	var/cache_key = "[cursor_icon]-[counter_text]"
+	if(ammo_cursors[cache_key])
+		return ammo_cursors[cache_key]
+
+	var/icon/ammo_cursor = icon(cursor_icon)
+	ammo_cursor.Crop(-15, -15, ammo_cursor.Width() + 16, ammo_cursor.Height() + 16)
+	var/counter_width = length(counter_text) * 12 - 2
+	var/digit_x = floor((ammo_cursor.Width() - counter_width) * 0.5) + 1
+	for(var/i in 1 to length(counter_text))
+		var/icon/digit = icon('icons/obj/structures/machinery/status_display.dmi', copytext(counter_text, i, i + 1)) //true redneck engineering
+		digit.Crop(1, 28, 5, 32)
+		digit.Scale(10, 10)
+		ammo_cursor.Blend(digit, ICON_OVERLAY, digit_x, 3)
+		digit_x += 12
+	ammo_cursors[cache_key] = ammo_cursor
+	return ammo_cursor
+
 /proc/get_flat_human_copy_icon(mob/living/carbon/human/original, equipment_preset_dresscode, showDirs = GLOB.cardinals, outfit_override)
 	var/mob/living/carbon/human/dummy/body = generate_or_wait_for_human_dummy(null)
 

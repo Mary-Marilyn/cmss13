@@ -147,6 +147,7 @@ their unique feature is that a direct hit will buff your damage and firerate
 	if(current_mag.current_rounds <= 0)
 		if(in_chamber)
 			in_chamber = null
+			update_ammo_counter()
 			var/obj/item/ammo_magazine/handful/new_handful = retrieve_bullet(ammo.type)
 			if(user)
 				for(var/obj/item/ammo_magazine/handful/hand in user.get_hands())
@@ -189,6 +190,7 @@ their unique feature is that a direct hit will buff your damage and firerate
 	current_mag.current_rounds--
 	current_mag.chamber_contents[current_mag.chamber_position] = "empty"
 	current_mag.chamber_position--
+	update_ammo_counter()
 	return TRUE
 
 /obj/item/weapon/gun/lever_action/proc/retrieve_bullet(selection)
@@ -230,6 +232,7 @@ their unique feature is that a direct hit will buff your damage and firerate
 	current_mag.chamber_position++
 	current_mag.chamber_contents[current_mag.chamber_position] = selection
 	playsound(user, reload_sound, 25, TRUE)
+	update_ammo_counter()
 	return TRUE
 
 /obj/item/weapon/gun/lever_action/proc/work_lever(mob/living/carbon/human/user)
@@ -246,6 +249,7 @@ their unique feature is that a direct hit will buff your damage and firerate
 		new_handful.forceMove(get_turf(src))
 
 	ready_lever_action_internal_mag()
+	update_ammo_counter()
 
 	recent_lever = world.time
 	if(in_chamber)
@@ -388,6 +392,7 @@ their unique feature is that a direct hit will buff your damage and firerate
 	hit_buff_reset_cooldown = 2 SECONDS //how much time after a direct hit until streaks reset
 	var/floating_penetration = FLOATING_PENETRATION_TIER_0 //holder var
 	var/floating_penetration_upper_limit = FLOATING_PENETRATION_TIER_4
+	var/fired_mouse_pointer = FALSE
 	var/direct_hit_sound = 'sound/weapons/gun_xm88_directhit_low.ogg'
 	attachable_allowed = list(
 		/obj/item/attachable/bayonet/upp, // Barrel
@@ -431,6 +436,7 @@ their unique feature is that a direct hit will buff your damage and firerate
 
 /obj/item/weapon/gun/lever_action/xm88/unwield(mob/user)
 	. = ..()
+	fired_mouse_pointer = FALSE
 	UnregisterSignal(user, COMSIG_MOB_FIRED_GUN)
 
 /obj/item/weapon/gun/lever_action/xm88/proc/update_fired_mouse_pointer(mob/user)
@@ -439,18 +445,18 @@ their unique feature is that a direct hit will buff your damage and firerate
 	if(!user.client?.prefs?.custom_cursors)
 		return
 
-	user.client.mouse_pointer_icon = get_fired_mouse_pointer(floating_penetration)
+	fired_mouse_pointer = TRUE
+	update_mouse_pointer(user, TRUE)
 	addtimer(CALLBACK(src, PROC_REF(finish_update_fired_mouse_pointer), user), 0.4 SECONDS, TIMER_UNIQUE|TIMER_OVERRIDE|TIMER_CLIENT_TIME)
 
 /obj/item/weapon/gun/lever_action/xm88/proc/finish_update_fired_mouse_pointer(mob/user)
+	fired_mouse_pointer = FALSE
 	if(flags_item & WIELDED)
 		update_mouse_pointer(user, TRUE)
 
 /obj/item/weapon/gun/lever_action/xm88/update_mouse_pointer(mob/user, new_cursor)
-	if(!user.client?.prefs?.custom_cursors)
-		return
-
-	user.client.mouse_pointer_icon = new_cursor ? get_scaling_mouse_pointer(floating_penetration) : initial(user.client.mouse_pointer_icon)
+	var/cursor_icon = fired_mouse_pointer ? get_fired_mouse_pointer(floating_penetration) : get_scaling_mouse_pointer(floating_penetration)
+	return ..(user, new_cursor, cursor_icon)
 
 /obj/item/weapon/gun/lever_action/xm88/proc/get_scaling_mouse_pointer(level)
 	switch(level)

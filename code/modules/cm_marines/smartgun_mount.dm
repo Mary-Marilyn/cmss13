@@ -537,6 +537,7 @@
 	projectile_coverage = PROJECTILE_COVERAGE_LOW
 	var/rounds = 0 //Have it be empty upon spawn.
 	var/rounds_max = 700
+	var/ammo_counter = TRUE
 	var/burst_scatter_mult = 4
 	var/safety = FALSE
 	health = 200
@@ -605,10 +606,13 @@
 
 ///Turns the mouse cursor into a crosshair if new_cursor is set to TRUE. If set to FALSE, returns the cursor to its initial icon.
 /obj/structure/machinery/m56d_hmg/proc/update_mouse_pointer(mob/user, new_cursor)
-	if(!user.client?.prefs.custom_cursors)
+	if(!user?.client?.prefs.custom_cursors)
 		return
 
-	user.client?.mouse_pointer_icon = new_cursor ? get_mouse_pointer() : initial(user.client?.mouse_pointer_icon)
+	var/cursor_icon = get_mouse_pointer()
+	if(new_cursor && user.client.prefs.mouse_ammo_counter && ammo_counter)
+		cursor_icon = get_ammo_cursor(cursor_icon, rounds)
+	user.client.mouse_pointer_icon = new_cursor ? cursor_icon : initial(user.client.mouse_pointer_icon)
 
 ///Getter proc. Returns the weapon's crosshair icon.
 /obj/structure/machinery/m56d_hmg/proc/get_mouse_pointer()
@@ -673,6 +677,8 @@
 			if(M56D_DMG_HEAVY) . += SPAN_WARNING("It's falling apart, barely able to handle the force of its own shots.")
 
 /obj/structure/machinery/m56d_hmg/update_icon() //Lets generate the icon based on how much ammo it has.
+	if(ammo_counter)
+		update_mouse_pointer(operator, TRUE)
 	if(!rounds)
 		icon_state = "[icon_empty]"
 	else
@@ -884,6 +890,8 @@
 		muzzle_flash(final_angle)
 	in_chamber = null
 	rounds--
+	if(ammo_counter)
+		update_mouse_pointer(operator, TRUE)
 	if(!rounds)
 		handle_ammo_out()
 	return AUTOFIRE_CONTINUE
@@ -1270,6 +1278,7 @@
 	SEND_SIGNAL(src, COMSIG_GUN_BURST_SHOT_DELAY_MODIFIED, burst_fire_delay)
 
 /obj/structure/machinery/m56d_hmg/mg_turret //Our mapbound version with stupid amounts of ammo.
+	ammo_counter = FALSE
 	name = "\improper scoped M38D heavy machine gun nest"
 	desc = "A scoped M38D heavy machine gun mounted upon a small reinforced post with sandbags to provide a small machine gun nest for all your defensive needs. Drag its sprite onto yourself to man it. Ctrl-click it to toggle burst fire."
 	icon_state = "M38D"
@@ -1298,6 +1307,7 @@
 	ammo = /datum/ammo/bullet/machinegun/whiskey
 
 /obj/structure/machinery/m56d_hmg/mg_turret/dropship
+	ammo_counter = TRUE
 	name = "\improper scoped M56D heavy machine gun"
 	desc = "A scoped M56D heavy machine gun mounted behind a metal shield. Drag its sprite onto yourself to man it. Ctrl-click it to toggle burst fire."
 	icon_full = "towergun_folding"

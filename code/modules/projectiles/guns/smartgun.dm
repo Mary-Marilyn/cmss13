@@ -5,6 +5,7 @@
 /obj/item/weapon/gun/smartgun
 	name = "\improper M56A2 smartgun"
 	desc = "The actual firearm in the 4-piece M56A2 Smartgun System. Essentially a heavy, mobile machinegun."
+	ammo_counter = TRUE
 	icon = 'icons/obj/items/weapons/guns/guns_by_faction/USCM/machineguns.dmi'
 	icon_state = "m56"
 	item_state = "m56"

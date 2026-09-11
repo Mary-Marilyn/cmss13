@@ -73,6 +73,7 @@ can cause issues with ammo types getting mixed up during the burst.
 		if(flags_gun_features & GUN_AMMO_COUNTER)
 			var/chambered = in_chamber ? TRUE : FALSE
 			to_chat(user, SPAN_DANGER("[current_mag.current_rounds][chambered ? "+1" : ""] / [current_mag.max_rounds] ROUNDS REMAINING."))
+	update_ammo_counter()
 	return TRUE
 
 /obj/item/weapon/gun/shotgun/proc/empty_chamber(mob/user, silent = FALSE, only_chamber = FALSE)
@@ -81,6 +82,7 @@ can cause issues with ammo types getting mixed up during the burst.
 	if(only_chamber || current_mag.current_rounds <= 0)
 		if(in_chamber)
 			in_chamber = null
+			update_ammo_counter()
 			var/obj/item/ammo_magazine/handful/new_handful = retrieve_shell(ammo.type)
 			if(user)
 				for(var/obj/item/ammo_magazine/handful/hand in user.get_hands())
@@ -127,6 +129,7 @@ can cause issues with ammo types getting mixed up during the burst.
 	current_mag.current_rounds--
 	current_mag.chamber_contents[current_mag.chamber_position] = "empty"
 	current_mag.chamber_position--
+	update_ammo_counter()
 	return TRUE
 
 		//While there is a much smaller way to do this,

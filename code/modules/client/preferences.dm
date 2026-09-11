@@ -299,6 +299,7 @@ GLOBAL_LIST_INIT(be_special_flags, list(
 
 	/// if this client has custom cursors enabled
 	var/custom_cursors = TRUE
+	var/mouse_ammo_counter = TRUE
 	var/main_cursor = TRUE
 	var/chosen_pointer
 
@@ -608,6 +609,7 @@ GLOBAL_LIST_INIT(be_special_flags, list(
 			if(!no_radials_preference)
 				dat += "<b>Hide Radial Menu Labels:</b> <a href='byond://?_src_=prefs;preference=no_radial_labels_preference'><b>[no_radial_labels_preference ? "TRUE" : "FALSE"]</b></a><br>"
 			dat += "<b>Custom Cursors:</b> <a href='byond://?_src_=prefs;preference=customcursors'><b>[custom_cursors ? "Enabled" : "Disabled"]</b></a><br>"
+			dat += "<b>Mouse Ammo Counter:</b> <a href='byond://?_src_=prefs;preference=mouseammocounter'><b>[mouse_ammo_counter ? "Enabled" : "Disabled"]</b></a><br>"
 
 			dat += "<h2><b><u>Chat Settings:</u></b></h2>"
 			if(CONFIG_GET(flag/ooc_country_flags))
@@ -2073,6 +2075,16 @@ GLOBAL_LIST_INIT(be_special_flags, list(
 
 				if("customcursors")
 					owner?.do_toggle_custom_cursors(owner?.mob)
+
+				if("mouseammocounter")
+					mouse_ammo_counter = !mouse_ammo_counter
+					save_preferences()
+					for(var/obj/item/weapon/gun/gun in user.get_hands())
+						gun.update_ammo_counter()
+					if(istype(user.interactee, /obj/structure/machinery/m56d_hmg))
+						var/obj/structure/machinery/m56d_hmg/mounted_gun = user.interactee
+						if(mounted_gun.operator == user)
+							mounted_gun.update_mouse_pointer(user, TRUE)
 
 				if("save")
 					if(save_cooldown > world.time)

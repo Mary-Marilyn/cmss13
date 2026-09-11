@@ -28,6 +28,7 @@
 
 	///A custom mouse pointer icon to use when wielded
 	var/mouse_pointer = 'icons/effects/mouse_pointer/rifle_mouse.dmi'
+	var/ammo_counter = FALSE
 
 	var/accepted_ammo = list()
 	///Determines what kind of bullet is created when the gun is unloaded - used to match rounds to magazines. Set automatically when reloading. Can be used in a list.
@@ -599,6 +600,7 @@ As sniper rifles have both and weapon mods can change them as well. ..() deals w
 	icon_state = new_icon_state
 	update_mag_overlay()
 	update_attachables()
+	update_ammo_counter()
 
 // procedure for fetching properly formatted gun examines, for the most part
 /obj/item/weapon/gun/proc/ammo_desc(mob/user)
@@ -918,11 +920,27 @@ As sniper rifles have both and weapon mods can change them as well. ..() deals w
 	update_mouse_pointer(user.mob, flags_item & WIELDED)
 
 ///Turns the mouse cursor into a crosshair if new_cursor is set to TRUE. If set to FALSE, returns the cursor to its initial icon.
-/obj/item/weapon/gun/proc/update_mouse_pointer(mob/user, new_cursor)
-	if(!user.client?.prefs.custom_cursors)
+/obj/item/weapon/gun/proc/update_mouse_pointer(mob/user, new_cursor, cursor_icon = null)
+	if(!user?.client?.prefs.custom_cursors)
 		return
 
-	user.client.mouse_pointer_icon = new_cursor ? mouse_pointer : initial(user.client.mouse_pointer_icon)
+	cursor_icon ||= mouse_pointer
+	if(new_cursor && user.client.prefs.mouse_ammo_counter && has_ammo_counter() && !active_attachable)
+		cursor_icon = get_ammo_cursor(cursor_icon, (current_mag?.current_rounds || 0) + (in_chamber ? 1 : 0))
+	user.client.mouse_pointer_icon = new_cursor ? cursor_icon : initial(user.client.mouse_pointer_icon)
+
+/obj/item/weapon/gun/proc/has_ammo_counter()
+	if(ammo_counter)
+		return TRUE
+	if(!(flags_gun_features & GUN_AMMO_COUNTER) || flags_gun_features & (GUN_NO_DESCRIPTION|GUN_UNUSUAL_DESIGN))
+		return FALSE
+	if(flags_gun_features & GUN_INTERNAL_MAG && has_open_icon)
+		return FALSE
+	return !!(current_mag || initial(current_mag))
+
+/obj/item/weapon/gun/proc/update_ammo_counter()
+	if(has_ammo_counter() && flags_item & WIELDED && ismob(loc))
+		update_mouse_pointer(loc, TRUE)
 
 //----------------------------------------------------------
 			// \\
@@ -1021,6 +1039,7 @@ User can be passed as null, (a gun reloading itself for instance), so we need to
 			if(bullet.current_rounds > 0)
 				in_chamber = create_bullet(bullet.ammo_source, initial(name))
 				apply_traits(in_chamber)
+				update_ammo_counter()
 				user.visible_message(SPAN_NOTICE(("[user] loads a [bullet.singular_name] into [src]'s chamber!")),
 					SPAN_NOTICE(("You load a [SPAN_ORANGE(bullet.singular_name)] into [src]'s chamber.")))
 				bullet.current_rounds--
@@ -1108,6 +1127,7 @@ User can be passed as null, (a gun reloading itself for instance), so we need to
 			new_handful.forceMove(get_turf(src)) // just drop it
 
 	QDEL_NULL(in_chamber)
+	update_ammo_counter()
 
 //Funny fix for smatrgun
 /obj/item/weapon/gun/proc/get_ammo_type_chambered(mob/user)
@@ -1136,6 +1156,7 @@ User can be passed as null, (a gun reloading itself for instance), so we need to
 		SPAN_NOTICE("You cock [src]."), null, 4, CHAT_TYPE_COMBAT_ACTION)
 	display_ammo(user)
 	ready_in_chamber() //This will already check for everything else, loading the next bullet.
+	update_ammo_counter()
 
 
 //----------------------------------------------------------
@@ -1477,7 +1498,7 @@ and you're good to go.
 	//This is where we load the next bullet in the chamber. We check for attachments too, since we don't want to load anything if an attachment is active.
 	if(!check_for_attachment_fire && !reload_into_chamber(user)) // It has to return a bullet, otherwise it's empty. Unless it's an undershotgun.
 		click_empty(user)
-		return TRUE //Nothing else to do here, time to cancel out.
+	update_ammo_counter()
 	return TRUE
 
 #define EXECUTION_CHECK (attacked_mob.stat == UNCONSCIOUS || attacked_mob.is_mob_restrained()) && (user.zone_selected=="head") && ((user.a_intent == INTENT_DISARM) || (user.a_intent == INTENT_GRAB))
@@ -1690,7 +1711,9 @@ and you're good to go.
 		in_chamber = null
 
 		//This is where we load the next bullet in the chamber. We check for attachments too, since we don't want to load anything if an attachment is active.
-		if(!check_for_attachment_fire && !reload_into_chamber(user)) // It has to return a bullet, otherwise it's empty. Unless it's an undershotgun.
+		var/chamber_ready = check_for_attachment_fire || reload_into_chamber(user)
+		update_ammo_counter()
+		if(!chamber_ready) // It has to return a bullet, otherwise it's empty. Unless it's an undershotgun.
 			click_empty(user)
 			break //Nothing else to do here, time to cancel out.
 
@@ -1816,6 +1839,7 @@ and you're good to go.
 		QDEL_NULL(projectile_to_fire)
 		in_chamber = null
 		reload_into_chamber(user) //Reload the sucker.
+		update_ammo_counter()
 	else
 		click_empty(user)//If there's no projectile, we can't do much.
 		if(istype(current_revolver) && current_revolver.russian_roulette && current_revolver.current_mag && current_revolver.current_mag.current_rounds)
@@ -2601,6 +2625,7 @@ not all weapons use normal magazines etc. load_into_chamber() itself is designed
 	if(!active_attachable)
 		in_chamber = null
 	reload_into_chamber(user)
+	update_ammo_counter()
 
 /datum/component/gun_hush // yes im lazy to make another file in the components folder
 	var/hush_enabled = TRUE
