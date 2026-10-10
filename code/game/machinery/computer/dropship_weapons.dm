@@ -932,6 +932,21 @@
 	firemission_envelope = new /datum/cas_fire_envelope/uscm_dropship()
 	shuttle_tag = DROPSHIP_SAIPAN
 
+/obj/structure/machinery/computer/dropship_weapons/upp
+	name = "UPP dropship weapons controls"
+	req_one_access = list(ACCESS_UPP_FLIGHT, ACCESS_UPP_LEADERSHIP)
+	faction = FACTION_UPP
+	minimap_flag = MINIMAP_FLAG_UPP
+	firemission_envelope = new /datum/cas_fire_envelope/uscm_dropship()
+
+/obj/structure/machinery/computer/dropship_weapons/upp/morana
+	name = "\improper 'Morana' weapons controls"
+	shuttle_tag = DROPSHIP_MORANA
+
+/obj/structure/machinery/computer/dropship_weapons/upp/devana
+	name = "\improper 'Devana' weapons controls"
+	shuttle_tag = DROPSHIP_DEVANA
+
 /obj/structure/machinery/computer/dropship_weapons/proc/simulate_firemission(mob/living/user)
 	if(!configuration)
 		to_chat(user, SPAN_WARNING("Configure a firemission before attempting to run the simulation."))

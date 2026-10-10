@@ -123,6 +123,20 @@
 	arrival_message = "This is UPP dispatch. USS Almayer, We are responding to your distress call, we will render aid as able, do not fire."
 	objectives = "Render assistance towards the UA Forces, Listen to your superior officers."
 
+/datum/emergency_call/upp/rostock
+	name = "UPP Rescue Team (Rostock)"
+	probability = 0
+	hostility = FALSE
+
+/datum/emergency_call/upp/rostock/New()
+	..()
+	arrival_message = "[MAIN_SHIP_NAME], this is Union Dispatch. A rescue team is approaching your hangar. Prepare to receive them."
+	objectives = "Board the [MAIN_SHIP_NAME], assist Union personnel, and rescue survivors. Follow the orders of the ship's commanding officer."
+
+/datum/emergency_call/upp/rostock/print_backstory(mob/living/carbon/human/responder)
+	to_chat(responder, SPAN_BOLD("Your team has been dispatched to a Union warship after receiving its emergency beacon. Board the [MAIN_SHIP_NAME], locate its commanding officer, and recover surviving personnel."))
+	to_chat(responder, SPAN_WARNING("You are friendly to UPP personnel. Follow the ship commander's orders and protect the survivors."))
+
 /datum/emergency_call/upp/platoon
 	name = "UPP Naval Infantry (Platoon) (Hostile)"
 	mob_max = 30

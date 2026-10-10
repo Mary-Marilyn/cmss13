@@ -1,13 +1,3 @@
-/obj/effect/landmark/start/upp
-	name = "UPP start join"
-	icon_state = "base_upp"
-	job_list = UPP_JOB_LIST
-
-/obj/effect/landmark/late_join/upp
-	name = "UPP late join"
-	icon_state = "late_join_upp"
-	job_list = UPP_JOB_LIST
-
 /datum/job/antag/upp // Abstract type (null title)
 	allow_additional = TRUE
 	selection_class = "job_synth" //setup colour
@@ -35,7 +25,8 @@
 
 /datum/equipment_preset/upp/New()
 	.=..()
-	access = get_access(ACCESS_LIST_UPP_ALL)
+	if(!length(access))
+		access = get_access(ACCESS_LIST_UPP_ALL)
 
 /datum/equipment_preset/upp/load_gear(mob/living/carbon/human/new_human)
 	.=..()
@@ -89,6 +80,8 @@
 
 /datum/job/antag/upp/rifleman
 	title = JOB_UPP
+	total_positions = -1
+	spawn_positions = -1
 	flags_startup_parameters = ROLE_ADD_TO_SQUAD
 	gear_preset = /datum/equipment_preset/upp/soldier
 
@@ -227,7 +220,7 @@
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 
 		list("ACCESSORIES (CHOOSE 1)", 0, null, null, null),
 		list("Brown Webbing Vest", 10, /obj/item/clothing/accessory/storage/black_vest/brown_vest, MARINE_CAN_BUY_ACCESSORY, VENDOR_ITEM_RECOMMENDED),
@@ -246,6 +239,7 @@
 
 		list("SPECIAL AMMUNITION", 0, null, null, null),
 		list("Type 71 AP Magazine (5.45x39mm)", 10, /obj/item/ammo_magazine/rifle/type71/ap , null, VENDOR_ITEM_REGULAR),
+		list("Type 64 Helical AP Magazine (7.62x19mm)", 10, /obj/item/ammo_magazine/smg/bizon/ap, null, VENDOR_ITEM_REGULAR),
 
 		list("EXPLOSIVES", 0, null, null, null),
 		list("Smoke Grenade Packet", 10, /obj/item/storage/box/packet/smoke, null, VENDOR_ITEM_REGULAR),
@@ -278,6 +272,7 @@
 
 		list("SPECIAL AMMUNITION", 0, null, null, null),
 		list("Type 71 AP Magazine (5.45x39mm)", 10, /obj/item/ammo_magazine/rifle/type71/ap , null, VENDOR_ITEM_REGULAR),
+		list("Type 64 Helical AP Magazine (7.62x19mm)", 10, /obj/item/ammo_magazine/smg/bizon/ap, null, VENDOR_ITEM_REGULAR),
 
 		list("EXPLOSIVES", 0, null, null, null),
 		list("Smoke Grenade", 5, /obj/item/explosive/grenade/smokebomb, null, VENDOR_ITEM_REGULAR),
@@ -318,6 +313,8 @@
 
 /datum/job/antag/upp/medic
 	title = JOB_UPP_MEDIC
+	total_positions = 16
+	spawn_positions = 16
 	gear_preset = /datum/equipment_preset/upp/medic
 	flags_startup_parameters = ROLE_ADD_TO_SQUAD
 
@@ -437,7 +434,7 @@
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 
 		list("ACCESSORIES (CHOOSE 1)", 0, null, null, null),
 		list("Brown Webbing Vest", 0, /obj/item/clothing/accessory/storage/black_vest/brown_vest, MARINE_CAN_BUY_ACCESSORY, VENDOR_ITEM_RECOMMENDED),
@@ -507,6 +504,7 @@
 
 		list("SPECIAL AMMUNITION", 0, null, null, null),
 		list("Type 71 AP Magazine (5.45x39mm)", 10, /obj/item/ammo_magazine/rifle/type71/ap , null, VENDOR_ITEM_REGULAR),
+		list("Type 64 Helical AP Magazine (7.62x19mm)", 10, /obj/item/ammo_magazine/smg/bizon/ap, null, VENDOR_ITEM_REGULAR),
 
 		list("EXPLOSIVES", 0, null, null, null),
 		list("Smoke Grenade Packet", 10, /obj/item/storage/box/packet/smoke, null, VENDOR_ITEM_REGULAR),
@@ -528,6 +526,8 @@
 //*****************************************************************************************************/
 /datum/job/antag/upp/sapper
 	title = JOB_UPP_ENGI
+	total_positions = 12
+	spawn_positions = 12
 	gear_preset = /datum/equipment_preset/upp/sapper
 	flags_startup_parameters = ROLE_ADD_TO_SQUAD
 
@@ -562,7 +562,7 @@
 	//face
 	new_human.equip_to_slot_or_del(new /obj/item/device/radio/headset/distress/UPP/cct, WEAR_L_EAR)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/glasses/welding(new_human), WEAR_EYES)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas, WEAR_FACE)
+	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/upp_pfb, WEAR_FACE)
 	//head
 	var/headgear = prob(70) ? /obj/item/clothing/head/helmet/marine/veteran/UPP/engi : /obj/item/clothing/head/uppcap/ushanka
 	new_human.equip_to_slot_or_del(new headgear, WEAR_HEAD)
@@ -632,7 +632,7 @@
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 
 		list("ACCESSORIES (CHOOSE 1)", 0, null, null, null),
 		list("Brown Webbing Vest", 0, /obj/item/clothing/accessory/storage/black_vest/brown_vest, MARINE_CAN_BUY_ACCESSORY, VENDOR_ITEM_RECOMMENDED),
@@ -668,6 +668,7 @@
 
 		list("SPECIAL AMMUNITION", 0, null, null, null),
 		list("Type 71 AP Magazine (5.45x39mm)", 10, /obj/item/ammo_magazine/rifle/type71/ap , null, VENDOR_ITEM_REGULAR),
+		list("Type 64 Helical AP Magazine (7.62x19mm)", 10, /obj/item/ammo_magazine/smg/bizon/ap, null, VENDOR_ITEM_REGULAR),
 
 		list("EXPLOSIVES", 0, null, null, null),
 		list("Plastic Explosive", 5, /obj/item/explosive/plastic, null, VENDOR_ITEM_RECOMMENDED),
@@ -836,6 +837,8 @@
 //*****************************************************************************************************/
 /datum/job/antag/upp/machinegunner
 	title = JOB_UPP_SPECIALIST
+	total_positions = 4
+	spawn_positions = 4
 	gear_preset = /datum/equipment_preset/upp/machinegunner
 	flags_startup_parameters = ROLE_ADD_TO_SQUAD
 
@@ -947,6 +950,7 @@
 
 		list("SPECIAL AMMUNITION", 0, null, null, null),
 		list("Type 71 AP Magazine (5.45x39mm)", 10, /obj/item/ammo_magazine/rifle/type71/ap , null, VENDOR_ITEM_REGULAR),
+		list("Type 64 Helical AP Magazine (7.62x19mm)", 10, /obj/item/ammo_magazine/smg/bizon/ap, null, VENDOR_ITEM_REGULAR),
 		list("M240 Incinerator Tank (Napthal)", 3, /obj/item/ammo_magazine/flamer_tank, null, VENDOR_ITEM_REGULAR),
 		list("M240 Incinerator Tank (B-Gel)", 3, /obj/item/ammo_magazine/flamer_tank/gellied, null, VENDOR_ITEM_REGULAR),
 
@@ -987,6 +991,8 @@
 //*****************************************************************************************************/
 /datum/job/antag/upp/leader
 	title = JOB_UPP_LEADER
+	total_positions = 4
+	spawn_positions = 4
 	gear_preset = /datum/equipment_preset/upp/leader
 	flags_startup_parameters = ROLE_ADD_TO_SQUAD
 
@@ -1168,6 +1174,7 @@
 
 		list("SPECIAL AMMUNITION", 0, null, null, null),
 		list("Type 71 AP Magazine (5.45x39mm)", 10, /obj/item/ammo_magazine/rifle/type71/ap , null, VENDOR_ITEM_REGULAR),
+		list("Type 64 Helical AP Magazine (7.62x19mm)", 10, /obj/item/ammo_magazine/smg/bizon/ap, null, VENDOR_ITEM_REGULAR),
 		list("M240 Incinerator Tank (Napthal)", 3, /obj/item/ammo_magazine/flamer_tank, null, VENDOR_ITEM_REGULAR),
 		list("M240 Incinerator Tank (B-Gel)", 3, /obj/item/ammo_magazine/flamer_tank/gellied, null, VENDOR_ITEM_REGULAR),
 
@@ -1216,6 +1223,8 @@
 
 /datum/job/antag/upp/military_police
 	title = JOB_UPP_POLICE
+	total_positions = 8
+	spawn_positions = 8
 	gear_preset = /datum/equipment_preset/upp/military_police
 	selection_class = "job_mp"
 
@@ -1352,6 +1361,7 @@
 
 		list("SPECIAL AMMUNITION", 0, null, null, null),
 		list("Type 71 AP Magazine (5.45x39mm)", 10, /obj/item/ammo_magazine/rifle/type71/ap , null, VENDOR_ITEM_REGULAR),
+		list("Type 64 Helical AP Magazine (7.62x19mm)", 10, /obj/item/ammo_magazine/smg/bizon/ap, null, VENDOR_ITEM_REGULAR),
 
 		list("ATTACHMENTS", 0, null, null, null),
 		list("Angled Grip", 10, /obj/item/attachable/angledgrip, null, VENDOR_ITEM_REGULAR),
@@ -1386,6 +1396,8 @@
 
 /datum/job/antag/upp/doctor
 	title = JOB_UPP_LT_DOKTOR
+	total_positions = 2
+	spawn_positions = 2
 	selection_class = "job_cmo"
 	gear_preset = /datum/equipment_preset/upp/doctor
 
@@ -1498,7 +1510,7 @@
 		list("Medical Kit Pouch", 0, /obj/item/storage/pouch/medkit, MARINE_CAN_BUY_POUCH, VENDOR_ITEM_REGULAR),
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR)
 	)
 
@@ -1562,6 +1574,8 @@
 
 /datum/job/antag/upp/supply
 	title = JOB_UPP_SUPPLY
+	total_positions = 2
+	spawn_positions = 2
 	selection_class = "job_ct"
 	gear_preset = /datum/equipment_preset/upp/supply
 
@@ -1662,7 +1676,7 @@
 		list("Tools Pouch (Full)", 0, /obj/item/storage/pouch/tools/full, MARINE_CAN_BUY_POUCH, VENDOR_ITEM_REGULAR),
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR)
 	)
 
@@ -1699,6 +1713,10 @@
 
 /datum/job/antag/upp/officer //this is placeholder for stuff that is supposed to be the same for all officers
 	selection_class = "job_command"
+
+/datum/job/antag/upp/officer/junior
+	title = JOB_UPP_LT_OFFICER
+	gear_preset = /datum/equipment_preset/upp/officer
 
 /datum/equipment_preset/upp/officer/load_gear(mob/living/carbon/human/new_human)
 	. = ..()
@@ -1795,7 +1813,7 @@
 		list("Pistol Pouch", 0, /obj/item/storage/pouch/pistol, MARINE_CAN_BUY_POUCH, VENDOR_ITEM_REGULAR),
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 		list("Rebreather", 0, /obj/item/clothing/mask/rebreather, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 
@@ -2060,6 +2078,18 @@
 	minimap_icon = "upp_xo"
 	paygrades = list(PAY_SHORT_UO3 = JOB_PLAYTIME_TIER_0)
 	skills = /datum/skills/upp/kapitan
+	access = list(
+		ACCESS_UPP_GENERAL,
+		ACCESS_UPP_MEDICAL,
+		ACCESS_UPP_ENGINEERING,
+		ACCESS_UPP_SECURITY,
+		ACCESS_UPP_ARMORY,
+		ACCESS_UPP_FLIGHT,
+		ACCESS_UPP_RESEARCH,
+		ACCESS_UPP_COMMANDO,
+		ACCESS_UPP_LEADERSHIP,
+		ACCESS_UPP_SENIOR_LEAD,
+	)
 
 
 /datum/equipment_preset/upp/officer/kapitan/dressed
@@ -2246,6 +2276,18 @@
 
 /datum/equipment_preset/upp/officer/major
 	name = "UPP Mayjor (Cryo)"
+	access = list(
+		ACCESS_UPP_GENERAL,
+		ACCESS_UPP_MEDICAL,
+		ACCESS_UPP_ENGINEERING,
+		ACCESS_UPP_SECURITY,
+		ACCESS_UPP_ARMORY,
+		ACCESS_UPP_FLIGHT,
+		ACCESS_UPP_RESEARCH,
+		ACCESS_UPP_COMMANDO,
+		ACCESS_UPP_LEADERSHIP,
+		ACCESS_UPP_SENIOR_LEAD,
+	)
 	assignment = JOB_UPP_MAY_OFFICER
 	job_title = JOB_UPP_MAY_OFFICER
 	role_comm_title = "May."
@@ -2454,6 +2496,18 @@
 //*****************************************************************************************************/
 /datum/equipment_preset/upp/officer/flag
 	name = "UPP Flag Officer Base"
+	access = list(
+		ACCESS_UPP_GENERAL,
+		ACCESS_UPP_MEDICAL,
+		ACCESS_UPP_ENGINEERING,
+		ACCESS_UPP_SECURITY,
+		ACCESS_UPP_ARMORY,
+		ACCESS_UPP_FLIGHT,
+		ACCESS_UPP_RESEARCH,
+		ACCESS_UPP_COMMANDO,
+		ACCESS_UPP_LEADERSHIP,
+		ACCESS_UPP_SENIOR_LEAD,
+	)
 	minimap_icon = "upp_co"
 	skills = /datum/skills/upp/commander
 
@@ -2740,7 +2794,7 @@
 	//face
 	new_human.equip_to_slot_or_del(new /obj/item/device/radio/headset/distress/UPP/cct, WEAR_L_EAR)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/glasses/welding(new_human), WEAR_EYES)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas, WEAR_FACE)
+	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/upp_pfb, WEAR_FACE)
 	//head
 	var/headgear = prob(70) ? /obj/item/clothing/head/helmet/marine/veteran/UPP/engi : /obj/item/clothing/head/uppcap/ushanka
 	new_human.equip_to_slot_or_del(new headgear, WEAR_HEAD)
@@ -3770,6 +3824,8 @@
 
 /datum/job/antag/upp/pilot
 	title = JOB_UPP_PILOT
+	total_positions = 2
+	spawn_positions = 2
 	gear_preset = /datum/equipment_preset/upp/pilot
 
 /datum/equipment_preset/upp/pilot
@@ -3846,7 +3902,7 @@
 		list("Tools Pouch (Full)", 0, /obj/item/storage/pouch/tools/full, MARINE_CAN_BUY_POUCH, VENDOR_ITEM_REGULAR),
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR)
 	)
 
@@ -3933,7 +3989,7 @@
 		list("Sidearm Pouch", 0, /obj/item/storage/pouch/pistol, MARINE_CAN_BUY_POUCH, VENDOR_ITEM_REGULAR),
 
 		list("MASK (CHOOSE 1)", 0, null, null, null),
-		list("Gas Mask", 0, /obj/item/clothing/mask/gas, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
+		list("Gas Mask", 0, /obj/item/clothing/mask/gas/upp_pfb, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR),
 		list("Heat Absorbent Coif", 0, /obj/item/clothing/mask/rebreather/scarf, MARINE_CAN_BUY_MASK, VENDOR_ITEM_REGULAR)
 	)
 
@@ -4233,7 +4289,7 @@
 	new_human.equip_to_slot_or_del(new /obj/item/storage/box/mre/upp, WEAR_IN_BACK)
 	new_human.equip_to_slot_or_del(new /obj/item/defenses/handheld/sentry/upp, WEAR_IN_BACK)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/glasses/welding(new_human), WEAR_EYES)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas, WEAR_FACE)
+	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/upp_pfb, WEAR_FACE)
 	//head
 	var/headgear = prob(70) ? /obj/item/clothing/head/helmet/marine/veteran/UPP/engi : /obj/item/clothing/head/uppcap/ushanka
 	new_human.equip_to_slot_or_del(new headgear, WEAR_HEAD)

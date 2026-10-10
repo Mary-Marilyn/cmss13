@@ -132,15 +132,17 @@ SUBSYSTEM_DEF(hijack)
 	var/alist/area_machinery_lookup = alist()
 
 	/// A list of all APCs on the main ship
-	var/list/obj/structure/machinery/power/apc/almayer/apcs = list()
+	var/list/obj/structure/machinery/power/apc/apcs = list()
 
 	/// A list of all powernets on the main ship
 	var/list/datum/powernet/powernets = list()
 
 /datum/controller/subsystem/hijack/Initialize(timeofday)
 	RegisterSignal(SSdcs, COMSIG_GLOB_GENERATOR_SET_OVERLOADING, PROC_REF(on_generator_overload))
+	SSmapping.HACK_LoadMapConfig()
 
-	var/spaceport_to_use = pick(subtypesof(/datum/spaceport))
+	var/list/spaceports = subtypesof(/datum/spaceport) - /datum/spaceport/upp/rostock
+	var/spaceport_to_use = FACTION_MAIN == FACTION_UPP ? /datum/spaceport/upp/rostock : pick(spaceports)
 	spaceport = new spaceport_to_use
 
 	return SS_INIT_SUCCESS
@@ -156,6 +158,11 @@ SUBSYSTEM_DEF(hijack)
 
 	msg = " Progress: [current_progress]% | Last run: [last_run_progress_change]"
 	return ..()
+
+/datum/controller/subsystem/hijack/proc/get_engine_area()
+	if(SSmapping.get_main_faction() == FACTION_UPP)
+		return /area/rostock/engineering/reactor
+	return /area/almayer/engineering/lower/engine_core
 
 /datum/controller/subsystem/hijack/fire(resumed = FALSE)
 	if(!SSticker?.mode?.is_in_endgame)
@@ -210,7 +217,7 @@ SUBSYSTEM_DEF(hijack)
 
 		// Handle power shortage by ship being cracked in half
 		if(crashed && hijack_status == HIJACK_OBJECTIVES_GROUND_CRASH)
-			for(var/obj/structure/machinery/power/apc/almayer/apc as anything in apcs)
+			for(var/obj/structure/machinery/power/apc/apc as anything in apcs)
 				if(prob(5))
 					apc.shorted = TRUE
 					playsound(apc.loc, 'sound/effects/sparks2.ogg', 25, 1)
@@ -222,7 +229,7 @@ SUBSYSTEM_DEF(hijack)
 	if(!SSticker.mode.count_marines(SSmapping.levels_by_trait(ZTRAIT_MARINE_MAIN_SHIP)))
 		// All marines dead, stop objective progression
 		if(in_ftl || hijack_status == HIJACK_OBJECTIVES_STARTED)
-			shipwide_ai_announcement("No USCM life signs detected on board. [in_ftl ? "Maintaining course to [spaceport.name]." : "Deactivating hyperdrive charge cycle."]")
+			shipwide_ai_announcement("No [SSmapping.get_main_faction()] life signs detected on board. [in_ftl ? "Maintaining course to [spaceport.name]." : "Deactivating hyperdrive charge cycle."]")
 		can_fire = FALSE
 		return
 
@@ -268,7 +275,7 @@ SUBSYSTEM_DEF(hijack)
 			initiate_ftl_charge()
 
 		// Calculate new progression
-		for(var/area/almayer/cycled_area as anything in current_run)
+		for(var/area/cycled_area as anything in current_run)
 			current_run -= cycled_area
 
 			var/new_area_state = cycled_area.power_equip
@@ -619,26 +626,26 @@ SUBSYSTEM_DEF(hijack)
 
 /datum/controller/subsystem/hijack/proc/heat_engine_room()
 	engine_room_heated = TRUE
-	var/area/engine_room = GLOB.areas_by_type[/area/almayer/engineering/lower/engine_core]
+	var/area/engine_room = GLOB.areas_by_type[get_engine_area()]
 	engine_room.firealert()
 	engine_room.temperature = T90C
 	for(var/mob/current_mob as anything in GLOB.living_player_list)
 		if(current_mob?.stat != CONSCIOUS)
 			continue
 		var/area/mob_area = get_area(current_mob)
-		if(istype(mob_area, /area/almayer/engineering/lower/engine_core))
+		if(istype(mob_area, get_engine_area()))
 			to_chat(current_mob, SPAN_BOLDWARNING("You feel the heat of the room increase as the fusion engines whirr louder."))
 
 /datum/controller/subsystem/hijack/proc/superheat_engine_room()
 	engine_room_superheated = TRUE
-	var/area/engine_room = GLOB.areas_by_type[/area/almayer/engineering/lower/engine_core]
+	var/area/engine_room = GLOB.areas_by_type[get_engine_area()]
 	engine_room.firealert()
 	engine_room.temperature = T120C //slowly deals burn at this temp
 	for(var/mob/current_mob as anything in GLOB.living_player_list)
 		if(current_mob?.stat != CONSCIOUS)
 			continue
 		var/area/mob_area = get_area(current_mob)
-		if(istype(mob_area, /area/almayer/engineering/lower/engine_core))
+		if(istype(mob_area, get_engine_area()))
 			to_chat(current_mob, SPAN_BOLDWARNING("The room feels incredibly hot, you can't take much more of this!"))
 
 /datum/controller/subsystem/hijack/proc/announce_sd_halfway()
@@ -737,6 +744,12 @@ SUBSYSTEM_DEF(hijack)
 	marine_announcement("Tachyon quantum jump drive deactivated due to insufficient fueling. Entry into atmosphere imminent.", HIJACK_ANNOUNCE, sound('sound/mecha/internaldmgalarm.ogg'))
 	play_sfx_for_shipside_xenos('sound/mecha/internaldmgalarm.ogg')
 
+	var/datum/map_config/ship_map_config = SSmapping.configs[SHIP_MAP]
+	if(!ship_map_config?.ground_crash_template_name)
+		// Older ship maps have no ground wreck to load.
+		addtimer(CALLBACK(src, PROC_REF(crash_without_ground_template)), 20 SECONDS)
+		return
+
 	// Figure out the main Z by assuming the LZs are on that Z
 	var/obj/lz = locate(/obj/structure/machinery/computer/shuttle/dropship/flight/lz1)
 	if(!lz)
@@ -778,6 +791,22 @@ SUBSYSTEM_DEF(hijack)
 		INVOKE_ASYNC(src, PROC_REF(ground_reentry_hazard), locate(ground_origin.x + 150, ground_origin.y + 50, ground_origin.z))
 		INVOKE_ASYNC(src, PROC_REF(ground_reentry_hazard), locate(ground_origin.x + 200, ground_origin.y + 50, ground_origin.z))
 	addtimer(CALLBACK(src, PROC_REF(crash_onto_ground), ground_origin, border_type, cordon_type), 20 SECONDS)
+
+/// Handles atmospheric impact for ship maps without a ground wreck template.
+/datum/controller/subsystem/hijack/proc/crash_without_ground_template()
+	unlock_all_dropship_doors()
+	disallow_dropship_launching()
+	disallow_dropship_pad_landing()
+	escape_possible = FALSE
+	crashed = TRUE
+	shipwide_ai_announcement("ALERT: Ship has sustained catastrophic damage. Lifeboats and pods disabled. Brace for impact.", HIJACK_ANNOUNCE, sound('sound/effects/GQfullcall.ogg'))
+	shakeship(sstrength = 8, stime = 5, drop = TRUE)
+	explode_pumps()
+	explode_apcs(50)
+	if(GLOB.security_level < SEC_LEVEL_RED)
+		set_security_level(SEC_LEVEL_RED, no_sound = TRUE, announce = FALSE)
+	if(!admin_sd_blocked && MODE_HAS_MODIFIER(/datum/gamemode_modifier/continue_on_ground_crash))
+		addtimer(CALLBACK(src, PROC_REF(unlock_self_destruct), FALSE), 15 SECONDS)
 
 /// Creates a warhead at the provided location for mainship reentry
 /datum/controller/subsystem/hijack/proc/ground_reentry_hazard(turf/target)

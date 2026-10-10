@@ -455,6 +455,10 @@
 	var/override_being_removed = FALSE
 	///How long it takes to unlock the console
 	var/remaining_time = 180 SECONDS
+	/// Access required for command personnel to launch.
+	var/command_access = ACCESS_MARINE_SENIOR
+	/// Access required for pilots to launch.
+	var/pilot_access = ACCESS_MARINE_DROPSHIP
 
 /obj/structure/machinery/computer/shuttle/lifeboat/ex_act(severity)
 	return
@@ -503,10 +507,10 @@
 				var/mob/living/carbon/human/human_user = user
 				var/obj/item/card/id/card = human_user.get_idcard()
 
-				if(!card || (!(ACCESS_MARINE_SENIOR in card.access) && !(ACCESS_MARINE_DROPSHIP in card.access))) // if no card or not enough access, check for held id
+				if(!card || (!(command_access in card.access) && !(pilot_access in card.access))) // if no card or not enough access, check for held id
 					card = locate(/obj/item/card/id) in human_user
 
-				if(!card || (!(ACCESS_MARINE_SENIOR in card.access) && !(ACCESS_MARINE_DROPSHIP in card.access))) // still no valid card found?
+				if(!card || (!(command_access in card.access) && !(pilot_access in card.access))) // still no valid card found?
 					to_chat(user, SPAN_NOTICE("[src]'s screen says \"Unauthorized access. Please inform your supervisor\"."))
 					return
 
@@ -536,7 +540,7 @@
 					if ("Yes")
 						launch_initiated = TRUE
 						to_chat(user, "[src]'s screen blinks and says \"Launch command accepted\".")
-						shipwide_ai_announcement("Launch command received. [lifeboat.id == MOBILE_SHUTTLE_LIFEBOAT_PORT ? "Port" : "Starboard"] Lifeboat doors will close in 10 seconds.")
+						shipwide_ai_announcement("Launch command received. [capitalize(lifeboat.name)] doors will close in 10 seconds.")
 						addtimer(CALLBACK(lifeboat, TYPE_PROC_REF(/obj/docking_port/mobile/crashable/lifeboat, evac_launch)), 10 SECONDS)
 						lifeboat.alarm_sound_loop.start()
 						lifeboat.playing_launch_announcement_alarm = TRUE
@@ -546,7 +550,7 @@
 						launch_initiated = TRUE
 						to_chat(user, "[src]'s screen blinks and says \"Emergency Launch command accepted\".")
 						lifeboat.evac_launch()
-						shipwide_ai_announcement("Emergency Launch command received. Launching [lifeboat.id == MOBILE_SHUTTLE_LIFEBOAT_PORT ? "Port" : "Starboard"] Lifeboat.")
+						shipwide_ai_announcement("Emergency launch command received. Launching [lifeboat.name].")
 						return
 
 			if(SHUTTLE_IGNITING)
@@ -587,3 +591,7 @@
 
 /obj/structure/machinery/computer/shuttle/lifeboat/handle_tail_stab(mob/living/carbon/xenomorph/xeno, blunt_stab)
 	return TAILSTAB_COOLDOWN_NONE
+
+/obj/structure/machinery/computer/shuttle/lifeboat/upp
+	command_access = ACCESS_UPP_SENIOR_LEAD
+	pilot_access = ACCESS_UPP_FLIGHT

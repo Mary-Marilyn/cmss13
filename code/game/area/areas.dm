@@ -71,6 +71,12 @@
 	var/requires_power = 1
 	var/unlimited_power = 0
 	var/always_unpowered = 0 //this gets overridden to 1 for space in area/New()
+	/// Whether this area contributes to hijack evacuation progress.
+	var/hijack_evacuation_area = FALSE
+	/// The amount this area contributes to hijack evacuation progress.
+	var/hijack_evacuation_weight = 0
+	/// Whether this area's contribution is additive or multiplicative.
+	var/hijack_evacuation_type = EVACUATION_TYPE_NONE
 
 	//which channels are powered
 	var/power_equip = TRUE

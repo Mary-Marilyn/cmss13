@@ -8,24 +8,33 @@
 	bound_height = 64 //putting this in so we can't walk through our machine.
 	bound_width = 96
 	custom_slashed_sound = "alien_claw_metal"
-	var/obj/item/device/radio/headset/almayer/mcom/ai/ai_headset //The thing it speaks into.
+	var/obj/item/device/radio/headset/ai_headset //The thing it speaks into.
 	maxHealth = 1000
 	health = 1000
 
 /mob/living/silicon/decoy/ship_ai //For the moment, pending better pathing.
 	var/silent_announcement_cooldown = 0
+	var/ai_headset_type = /obj/item/device/radio/headset/almayer/mcom/ai
 
 /mob/living/silicon/decoy/ship_ai/Initialize()
 	. = ..()
 	name = MAIN_AI_SYSTEM
 	desc = "This is the artificial intelligence system for the [MAIN_SHIP_NAME]. Like many other military-grade AI systems, this one was manufactured by Weyland-Yutani."
-	ai_headset = new(src)
+	ai_headset = new ai_headset_type(src)
 	GLOB.ai_mob_list += src
 	real_name = MAIN_AI_SYSTEM
 	ADD_TRAIT(src, TRAIT_IMMOBILIZED, TRAIT_SOURCE_INHERENT)
 	AddElement(/datum/element/corp_label/wy)
 	faction = FACTION_ARES
 	faction_group = FACTION_LIST_ARES_MARINE
+
+/mob/living/silicon/decoy/ship_ai/upp
+	ai_headset_type = /obj/item/device/radio/headset/distress/UPP/command
+
+/mob/living/silicon/decoy/ship_ai/upp/Initialize()
+	. = ..()
+	desc = "The shipboard artificial intelligence system for the [MAIN_SHIP_NAME], connected to the Union's command radio network."
+	faction_group = list(FACTION_ARES, FACTION_UPP)
 
 /mob/living/silicon/decoy/ship_ai/Destroy()
 	QDEL_NULL(ai_headset)

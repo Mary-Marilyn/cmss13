@@ -358,7 +358,7 @@ I hope it's easier to tell what the heck this proc is even doing, unlike previou
 /datum/authority/branch/role/proc/calculate_role_weight(datum/job/J)
 	if(!J)
 		return 0
-	if(J.title in GLOB.ROLES_MARINES)
+	if((J.title in GLOB.ROLES_MARINES) || (J.title in UPP_JOB_GRUNT_LIST))
 		return 1
 	if(J.title in GLOB.ROLES_XENO)
 		return 1

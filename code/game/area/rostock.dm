@@ -20,6 +20,12 @@
 	ambience_exterior = AMBIENCE_ALMAYER
 	ceiling_muffle = FALSE
 
+/area/rostock/Initialize(mapload, ...)
+	. = ..()
+
+	if(hijack_evacuation_area)
+		SShijack.progress_areas[src] = TRUE
+
 // Upper Deck Misc
 /area/rostock/upper_deck
 	fake_zlevel = 1 // upperdeck
@@ -177,6 +183,9 @@
 	name = "SSV Rostock - Reactor Core"
 	icon_state = "upperengineering"
 	fake_zlevel = 1 //upperdeck
+	hijack_evacuation_area = TRUE
+	hijack_evacuation_weight = 0.3
+	hijack_evacuation_type = EVACUATION_TYPE_ADDITIVE
 
 /area/rostock/engineering/lower_aft_corridor
 	name = "SSV Rostock - Upper Aft Entrance Corridor"
@@ -257,6 +266,9 @@
 	name = "SSV Rostock - Astronavigational Deck"
 	icon_state = "astronavigation"
 	fake_zlevel = 2 // lowerdeck
+	hijack_evacuation_area = TRUE
+	hijack_evacuation_weight = 0.3
+	hijack_evacuation_type = EVACUATION_TYPE_ADDITIVE
 
 /area/rostock/command/cic
 	name = "SSV Rostock - Combat Information Centre"

@@ -26,6 +26,10 @@
 	var/list/running_round_stats = list()
 	var/list/lz_smoke = list()
 
+	var/human_major = MODE_INFESTATION_M_MAJOR
+	var/human_minor = MODE_INFESTATION_M_MINOR
+	var/operation_unit = "2nd Bat. 'Falling Falcons'"
+
 	/**
 	 * How long, after first drop, should the resin protection in proximity to the selected LZ last
 	 */
@@ -644,7 +648,7 @@
 		else if (dest_id == DROPSHIP_LZ2)
 			select_lz(locate(/obj/structure/machinery/computer/shuttle/dropship/flight/lz2))
 
-	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(show_blurb_uscm)), DROPSHIP_DROP_MSG_DELAY)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(show_blurb_uscm), ZTRAIT_GROUND, operation_unit), DROPSHIP_DROP_MSG_DELAY)
 	addtimer(CALLBACK(src, PROC_REF(warn_resin_clear), marine_dropship), DROPSHIP_DROP_FIRE_DELAY)
 	DB_ENTITY(/datum/entity/survivor_survival) // Record surv survival right now
 	addtimer(CALLBACK(SSentity_manager, TYPE_PROC_REF(/datum/controller/subsystem/entity_manager, select), /datum/entity/survivor_survival), 7 MINUTES) // And 7 minutes after drop. By then, marines will have found them, most likely
@@ -680,7 +684,7 @@
 			round_finished = MODE_INFESTATION_X_MINOR //Evacuation successfully took place.
 		else
 			SSticker.roundend_check_paused = TRUE
-			round_finished = MODE_INFESTATION_M_MAJOR //Humans destroyed the xenomorphs.
+			round_finished = human_major //Humans destroyed the xenomorphs.
 			ares_conclude()
 			end_of_round_ert()
 
@@ -736,9 +740,9 @@
 			return
 
 	if(length(hive.totalXenos) <= 3)
-		round_finished = MODE_INFESTATION_M_MAJOR
+		round_finished = human_major
 	else
-		round_finished = MODE_INFESTATION_M_MINOR
+		round_finished = human_minor
 	log_game("Distress Signal Hive collapse!")
 
 /**
@@ -763,9 +767,9 @@
 			if(GLOB.round_statistics && GLOB.round_statistics.current_map)
 				GLOB.round_statistics.current_map.total_xeno_victories++
 				GLOB.round_statistics.current_map.total_xeno_majors++
-		if(MODE_INFESTATION_M_MAJOR)
+		if(MODE_INFESTATION_M_MAJOR, MODE_FACTION_CLASH_UPP_MAJOR)
 			musical_track = pick('sound/theme/winning_triumph1.ogg','sound/theme/winning_triumph2.ogg','sound/theme/winning_triumph3.ogg')
-			end_icon = "marine_major"
+			end_icon = FACTION_MAIN == FACTION_UPP ? "upp_major" : "marine_major"
 			if(GLOB.round_statistics && GLOB.round_statistics.current_map)
 				GLOB.round_statistics.current_map.total_marine_victories++
 				GLOB.round_statistics.current_map.total_marine_majors++
@@ -817,9 +821,9 @@
 				musical_track = pick('sound/theme/neutral_melancholy1.ogg')
 			if(GLOB.round_statistics && GLOB.round_statistics.current_map)
 				GLOB.round_statistics.current_map.total_xeno_victories++
-		if(MODE_INFESTATION_M_MINOR)
+		if(MODE_INFESTATION_M_MINOR, MODE_FACTION_CLASH_UPP_MINOR)
 			musical_track = pick('sound/theme/neutral_hopeful1.ogg','sound/theme/neutral_hopeful2.ogg')
-			end_icon = "marine_minor"
+			end_icon = FACTION_MAIN == FACTION_UPP ? "upp_minor" : "marine_minor"
 			if(GLOB.round_statistics && GLOB.round_statistics.current_map)
 				GLOB.round_statistics.current_map.total_marine_victories++
 		if(MODE_INFESTATION_DRAW_DEATH)
@@ -865,12 +869,12 @@
 	switch(round_finished)
 		if(MODE_INFESTATION_X_MAJOR)
 			return "Round has ended. Xeno Major Victory."
-		if(MODE_INFESTATION_M_MAJOR)
-			return "Round has ended. Marine Major Victory."
+		if(MODE_INFESTATION_M_MAJOR, MODE_FACTION_CLASH_UPP_MAJOR)
+			return "Round has ended. [human_major]."
 		if(MODE_INFESTATION_X_MINOR)
 			return "Round has ended. Xeno Minor Victory."
-		if(MODE_INFESTATION_M_MINOR)
-			return "Round has ended. Marine Minor Victory."
+		if(MODE_INFESTATION_M_MINOR, MODE_FACTION_CLASH_UPP_MINOR)
+			return "Round has ended. [human_minor]."
 		if(MODE_INFESTATION_DRAW_DEATH)
 			return "Round has ended. Draw."
 	return "Round has ended in a strange way."

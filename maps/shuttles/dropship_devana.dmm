@@ -9,6 +9,10 @@
 	icon_state = "82"
 	},
 /area/shuttle/drop_upp2/devana)
+"ac" = (
+/obj/structure/machinery/computer/dropship_weapons/upp/devana,
+/turf/open/shuttle/dropship/medium_grey_single_wide_up_to_down,
+/area/shuttle/drop_upp2/devana)
 "aq" = (
 /turf/closed/shuttle/dropship_upp2{
 	icon_state = "32"
@@ -752,7 +756,7 @@ Hi
 sC
 mb
 Lu
-Oe
+ac
 aa
 ju
 Ph

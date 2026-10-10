@@ -42,6 +42,9 @@
 
 /obj/structure/machinery/computer/shuttle/dropship/flight/Initialize(mapload, ...)
 	. = ..()
+	if(SSmapping.get_main_faction() == FACTION_UPP && (istype(src, /obj/structure/machinery/computer/shuttle/dropship/flight/lz1) || istype(src, /obj/structure/machinery/computer/shuttle/dropship/flight/lz2)))
+		faction = FACTION_UPP
+		req_one_access = list(ACCESS_UPP_LEADERSHIP, ACCESS_UPP_FLIGHT, ACCESS_UPP_SENIOR_LEAD)
 	compatible_landing_zones = get_landing_zones()
 
 /obj/structure/machinery/computer/shuttle/dropship/flight/Destroy()
@@ -516,7 +519,7 @@
 					return FALSE
 				update_equipment(is_optimised, TRUE)
 				to_chat(user, SPAN_NOTICE("You begin the launch sequence for a flyby."))
-				if(shuttle.faction == FACTION_MARINE)
+				if(shuttle.faction == SSmapping.get_main_faction())
 					log_ares_flight(user.name, "Launched Dropship [shuttle.name] on a flyby.")
 				var/log = "[key_name(user)] launched the dropship [src.shuttleId] on flyby."
 				msg_admin_niche(log)
@@ -548,7 +551,7 @@
 				return TRUE
 			SSshuttle.moveShuttle(shuttle.id, dock.id, TRUE)
 			to_chat(user, SPAN_NOTICE("You begin the launch sequence to [dock]."))
-			if(shuttle.faction == FACTION_MARINE)
+			if(shuttle.faction == SSmapping.get_main_faction())
 				log_ares_flight(user.name, "Launched Dropship [shuttle.name] on a flight to [dock].")
 			var/log = "[key_name(user)] launched the dropship [src.shuttleId] on transport."
 			msg_admin_niche(log)
@@ -595,7 +598,7 @@
 			shuttle.automated_lz_id = ground_lz
 			shuttle.automated_delay = delay
 			playsound(loc, get_sfx("terminal_button"), KEYBOARD_SOUND_VOLUME, 1)
-			if(shuttle.faction == FACTION_MARINE)
+			if(shuttle.faction == SSmapping.get_main_faction())
 				log_ares_flight(user.name, "Enabled autopilot for Dropship [shuttle.name].")
 			var/log = "[key_name(user)] has enabled auto pilot on '[shuttle.name]'"
 			message_admins(log)
@@ -608,7 +611,7 @@
 			shuttle.automated_lz_id = null
 			shuttle.automated_delay = null
 			playsound(loc, get_sfx("terminal_button"), KEYBOARD_SOUND_VOLUME, 1)
-			if(shuttle.faction == FACTION_MARINE)
+			if(shuttle.faction == SSmapping.get_main_faction())
 				log_ares_flight(user.name, "Disabled autopilot for Dropship [shuttle.name].")
 			var/log = "[key_name(user)] has disabled auto pilot on '[shuttle.name]'"
 			message_admins(log)

@@ -23,10 +23,16 @@
 	var/y_travel = 1
 	var/obj/outer_target = new()
 	outer_target.x = centre_x
-	outer_target.y = ALMAYER_DECK_BOUNDARY
+	var/deck_boundary = ALMAYER_DECK_BOUNDARY
+	var/lower_deck_start = 1
+	if(GLOB.master_mode == GAMEMODE_UPP_DISTRESS_SIGNAL)
+		var/list/ship_bounds = SSmapping.z_list[crash_site.z].bounds
+		lower_deck_start = ship_bounds[MAP_MINY]
+		deck_boundary += lower_deck_start - 1
+	outer_target.y = deck_boundary
 	outer_target.z = crash_site.z
-	if(crash_site.y < ALMAYER_DECK_BOUNDARY)
-		outer_target.y = 1
+	if(crash_site.y < deck_boundary)
+		outer_target.y = lower_deck_start
 
 	// find the outer point of the ship, the first turf that is not space
 	while(outer_target.y > 1 && istype(get_turf(outer_target), /turf/open/space))
@@ -107,7 +113,7 @@
 		return
 
 	// if the AA site matches target site
-	if(target_ship_section == GLOB.almayer_aa_cannon.protecting_section)
+	if(target_ship_section == GLOB.almayer_aa_cannon?.protecting_section)
 		var/list/remaining_crash_sites = GLOB.almayer_ship_sections.Copy()
 		remaining_crash_sites -= target_ship_section
 		var/new_target_ship_section = pick(remaining_crash_sites)
@@ -169,6 +175,9 @@
 	GLOB.enter_allowed = FALSE
 
 /datum/dropship_hijack/almayer/proc/get_crashsite_turf(ship_section)
+	if(GLOB.master_mode == GAMEMODE_UPP_DISTRESS_SIGNAL)
+		return get_rostock_crashsite_turf(ship_section)
+
 	var/list/turfs = list()
 	switch(ship_section)
 		if("Upper deck Foreship")
@@ -215,6 +224,56 @@
 		else
 			CRASH("Crash site [ship_section] unknown.")
 	return pick(turfs)
+
+/datum/dropship_hijack/almayer/proc/get_rostock_crashsite_turf(ship_section)
+	var/list/turfs = list()
+	switch(ship_section)
+		if("Upper deck Foreship")
+			turfs += get_area_turfs(/area/rostock/hangar/hangarbay)
+		if("Upper deck Midship")
+			turfs += get_area_turfs(/area/rostock/security/brig_accessway)
+			turfs += get_area_turfs(/area/rostock/security/brig_entryway)
+			turfs += get_area_turfs(/area/rostock/security/brig_holding_area)
+			turfs += get_area_turfs(/area/rostock/upper_deck/hallway)
+			turfs += get_area_turfs(/area/rostock/medical/accessway)
+			turfs += get_area_turfs(/area/rostock/medical/chemistry)
+			turfs += get_area_turfs(/area/rostock/medical/lobby)
+			turfs += get_area_turfs(/area/rostock/medical/surgery)
+			turfs += get_area_turfs(/area/rostock/security/brig_office)
+		if("Upper deck Aftship")
+			turfs += get_area_turfs(/area/rostock/engineering/main_area)
+			turfs += get_area_turfs(/area/rostock/vehiclehangar)
+		if("Lower deck Foreship")
+			turfs += get_area_turfs(/area/rostock/command/armory)
+			turfs += get_area_turfs(/area/rostock/command/cic)
+			turfs += get_area_turfs(/area/rostock/command/hallway)
+			turfs += get_area_turfs(/area/rostock/command/dining)
+			turfs += get_area_turfs(/area/rostock/security/headquarters_armory)
+			turfs += get_area_turfs(/area/rostock/security/headquarters_storage)
+			turfs += get_area_turfs(/area/rostock/command/polcom)
+			turfs += get_area_turfs(/area/rostock/command/so)
+			turfs += get_area_turfs(/area/rostock/command/co)
+			turfs += get_area_turfs(/area/rostock/command/xo)
+			turfs += get_area_turfs(/area/rostock/security/headquarters_lobby)
+			turfs += get_area_turfs(/area/rostock/security/headquarters_interrogation)
+		if("Lower deck Midship")
+			turfs += get_area_turfs(/area/rostock/req)
+			turfs += get_area_turfs(/area/rostock/medical/prep)
+			turfs += get_area_turfs(/area/rostock/medical/morgue)
+			turfs += get_area_turfs(/area/rostock/lower_deck/m_hallway)
+			turfs += get_area_turfs(/area/rostock/lower_deck/bathroom)
+			turfs += get_area_turfs(/area/rostock/lower_deck/p_a_hallway)
+			turfs += get_area_turfs(/area/rostock/lower_deck/ammunition_storage)
+			turfs += get_area_turfs(/area/rostock/lower_deck/bunk)
+			turfs += get_area_turfs(/area/rostock/lower_deck/kitchen)
+		if("Lower deck Aftship")
+			turfs += get_area_turfs(/area/rostock/lower_deck/prep)
+			turfs += get_area_turfs(/area/rostock/lower_deck/briefing)
+			turfs += get_area_turfs(/area/rostock/lower_deck/p_a_hallway)
+			turfs += get_area_turfs(/area/rostock/lower_deck/s_a_hallway)
+		else
+			CRASH("Crash site [ship_section] unknown.")
+	return SAFEPICK(turfs)
 
 #undef HIJACK_CRASH_SITE_OFFSET_X
 #undef HIJACK_CRASH_SITE_OFFSET_Y

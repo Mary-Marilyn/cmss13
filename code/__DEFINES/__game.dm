@@ -6,7 +6,9 @@
 #define GLOBAL_PROC "magic BS"
 
 //Game defining directives.
-#define MAIN_AI_SYSTEM "ARES v3.2"
+#define MAIN_AI_SYSTEM SSmapping.get_main_ai_name()
+#define MAIN_AI_SYSTEM_DEFAULT "ARES v3.2"
+#define FACTION_MAIN SSmapping.get_main_faction()
 
 // Maploader bounds indices
 #define MAP_MINX 1
@@ -55,6 +57,7 @@
 #define GAMEMODE_INFECTION "Infection"
 #define GAMEMODE_EXTENDED "Extended"
 #define GAMEMODE_EXTENDED_NO_SPAWN "Extended - No Spawn"
+#define GAMEMODE_UPP_DISTRESS_SIGNAL "UPP Distress Signal"
 
 /// Number of players before we switch to lowpop maps only (LV, BR, Prison).
 #define PLAYERCOUNT_LOWPOP_MAP_LIMIT 130

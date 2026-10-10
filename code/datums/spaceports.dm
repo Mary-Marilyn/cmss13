@@ -36,6 +36,11 @@
 		/datum/emergency_call/upp/friendly,
 	)
 
+/datum/spaceport/upp/rostock
+	docking_message = "SSV Rostock, this is Znoy Control. Your distress signal has been received. Prepare to dock. A Union rescue team is boarding to secure the ship and recover survivors."
+	undocking_message = "Rostock, Znoy Control. The rescue team is no longer responding. We are severing the umbilical and quarantining your vessel. No further boarding attempts will be made."
+	allies = list(/datum/emergency_call/upp/rostock)
+
 /datum/spaceport/vanguard
 	name = "Irkala Station"
 	docking_message = "Attention, USCM vessel. We are launching umbilical cords and deploying a squad to investigate the nature of your distress in accordance with the Military Aid Act of 2177."

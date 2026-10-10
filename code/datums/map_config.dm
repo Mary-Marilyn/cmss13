@@ -473,6 +473,8 @@
 			if(g == GAMEMODE_EXTENDED) // always allow extended
 				continue
 			gamemodes += g
+		if(GAMEMODE_DISTRESS_SIGNAL in gamemodes)
+			gamemodes += GAMEMODE_UPP_DISTRESS_SIGNAL
 		gamemodes += GAMEMODE_EXTENDED
 	else if(!isnull(json["gamemodes"]))
 		log_world("map_config gamemodes is not a list!")

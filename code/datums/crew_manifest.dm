@@ -18,9 +18,22 @@ GLOBAL_DATUM_INIT(crew_manifest, /datum/crew_manifest, new)
 /datum/crew_manifest/ui_static_data(mob/user)
 	. = ..()
 	var/list/marine_roles_by_squad = GLOB.ROLES_SQUAD_ALL
+	var/list/squad_roles = GLOB.ROLES_MARINES
+	if(FACTION_MAIN == FACTION_UPP)
+		departments = list(
+			"Command" = GLOB.ROLES_CIC_ANTAG + JOB_UPP_LT_OFFICER,
+			"Auxiliary" = GLOB.ROLES_AUXIL_SUPPORT_ANTAG,
+			"Security" = GLOB.ROLES_POLICE_ANTAG,
+			"Engineering" = GLOB.ROLES_ENGINEERING_ANTAG,
+			"Requisitions" = GLOB.ROLES_REQUISITION_ANTAG,
+			"Medical" = GLOB.ROLES_MEDICAL_ANTAG,
+			"Miscellaneous" = GLOB.ROLES_MISC_ANTAG,
+		)
+		marine_roles_by_squad = list(SQUAD_UPP_1, SQUAD_UPP_2, SQUAD_UPP_3, SQUAD_UPP_4)
+		squad_roles = GLOB.ROLES_MARINES_ANTAG
 
 	for(var/squad_name in marine_roles_by_squad)
-		departments[squad_name] = GLOB.ROLES_MARINES
+		departments[squad_name] = squad_roles
 
 	var/list/departments_with_jobs = list()
 
@@ -44,7 +57,7 @@ GLOBAL_DATUM_INIT(crew_manifest, /datum/crew_manifest, new)
 		if(isnull(name) || isnull(rank))
 			continue
 
-		if(record_entry.fields["mob_faction"] != FACTION_MARINE && !(rank in USCM_SHARED_JOBS))
+		if(record_entry.fields["mob_faction"] != FACTION_MAIN && !(rank in USCM_SHARED_JOBS))
 			continue
 
 		var/entry_dept = null
@@ -57,7 +70,7 @@ GLOBAL_DATUM_INIT(crew_manifest, /datum/crew_manifest, new)
 		)
 
 		for(var/iterated_dept in departments)
-			if(iterated_dept in GLOB.ROLES_SQUAD_ALL)
+			if(iterated_dept in (GLOB.ROLES_SQUAD_ALL + list(SQUAD_UPP_1, SQUAD_UPP_2, SQUAD_UPP_3, SQUAD_UPP_4)))
 				if(isnull(squad) || lowertext(squad) != lowertext(iterated_dept))
 					continue
 			var/list/jobs = departments[iterated_dept]
@@ -85,7 +98,7 @@ GLOBAL_DATUM_INIT(crew_manifest, /datum/crew_manifest, new)
 		ui.open()
 
 /datum/crew_manifest/ui_state(mob/user)
-	if(ishuman(user) && (user.faction == FACTION_MARINE || (user.faction in FACTION_LIST_WY) || user.faction == FACTION_FAX))
+	if(ishuman(user) && (user.faction == FACTION_MAIN || (user.faction in FACTION_LIST_WY) || user.faction == FACTION_FAX))
 		return GLOB.conscious_state
 	if(isnewplayer(user))
 		return GLOB.new_player_state

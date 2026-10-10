@@ -47,6 +47,11 @@ SUBSYSTEM_DEF(mapping)
 /datum/controller/subsystem/mapping/proc/HACK_LoadMapConfig()
 	if(!configs)
 		configs = load_map_configs(ALL_MAPTYPES, error_if_missing = FALSE)
+		var/game_mode = configs[GROUND_MAP].force_mode ? configs[GROUND_MAP].force_mode : trim(file2text("data/mode.txt"))
+		if(game_mode == GAMEMODE_UPP_DISTRESS_SIGNAL)
+			var/datum/map_config/upp_ship = new
+			upp_ship.LoadConfig("maps/ssv_rostock.json", TRUE)
+			configs[SHIP_MAP] = upp_ship
 		world.name = "[CONFIG_GET(string/title)] - [SSmapping.configs[SHIP_MAP].map_name]"
 
 /datum/controller/subsystem/mapping/Initialize(timeofday)
@@ -242,7 +247,7 @@ SUBSYSTEM_DEF(mapping)
 
 	// loads the UPP ship if the game mode is faction clash (Generally run by the Prepare event under prep event verb)
 	if(trim(file2text("data/mode.txt")) == GAMEMODE_FACTION_CLASH_UPP_CM)
-		Loadship(FailedZs, "ssv_rostock", "templates/", list("ssv_rostock.dmm") , list(),ZTRAITS_MAIN_SHIP , override_map_path = "maps/")
+		Loadship(FailedZs, "ssv_rostock", "templates/", list("ssv_rostock.dmm"), list(), ZTRAITS_MAIN_SHIP, override_map_path = "maps/")
 
 	#ifndef RUNTIME_MAP
 	var/datum/map_config/hunter_map = new
@@ -436,6 +441,16 @@ SUBSYSTEM_DEF(mapping)
 	if(!MC)
 		return MAIN_SHIP_DEFAULT_NAME
 	return MC.map_name
+
+/datum/controller/subsystem/mapping/proc/get_main_ai_name()
+	if(configs?[SHIP_MAP]?.map_name == MAP_ROSTOCK)
+		return "1VAN/3"
+	return MAIN_AI_SYSTEM_DEFAULT
+
+/datum/controller/subsystem/mapping/proc/get_main_faction()
+	if(configs?[SHIP_MAP]?.map_name == MAP_ROSTOCK)
+		return FACTION_UPP
+	return FACTION_MARINE
 
 /datum/controller/subsystem/mapping/proc/lazy_load_template(datum/lazy_template/template_to_load, force = FALSE)
 	RETURN_TYPE(/datum/turf_reservation)

@@ -43,20 +43,20 @@ base = the base the marines are staging from. The ship, Whiskey Outpost etc. Non
 							"misc" = list())
 
 	for(var/mob/living/carbon/human/H as anything in GLOB.alive_human_list)
-		if(H.faction != FACTION_MARINE || (H.z in exempt_zlevels))
+		if(H.faction != FACTION_MAIN || (H.z in exempt_zlevels))
 			continue
 		switch(H.job)
-			if(BLURB_USCM_COMBAT)
+			if(BLURB_USCM_COMBAT, JOB_UPP, JOB_UPP_ENGI, JOB_UPP_MEDIC, JOB_UPP_SPECIALIST, JOB_UPP_LEADER)
 				mobarray["combat"] += H
-			if(BLURB_USCM_FLIGHT)
+			if(BLURB_USCM_FLIGHT, JOB_UPP_PILOT)
 				mobarray["po"] += H
-			if(BLURB_USCM_MP)
+			if(BLURB_USCM_MP, JOB_UPP_POLICE)
 				mobarray["mp"] += H
 			if(BLURB_USCM_ENGI)
 				mobarray["eng"] += H
-			if(BLURB_USCM_MEDICAL)
+			if(BLURB_USCM_MEDICAL, JOB_UPP_LT_DOKTOR)
 				mobarray["med"] += H
-			if(BLURB_USCM_REQ)
+			if(BLURB_USCM_REQ, JOB_UPP_SUPPLY)
 				mobarray["req"] += H
 			if(BLURB_USCM_WY)
 				mobarray["cl"] += H

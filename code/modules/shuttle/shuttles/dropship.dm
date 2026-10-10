@@ -169,7 +169,7 @@
 	else
 		sneak_hijack_check()
 
-/// Searches the shuttle_areas for a non-dead, non-USCM-allied, non-USCM-iff tagged queen and returns her (or null)
+/// Returns a living queen hostile to this dropship's faction.
 /obj/docking_port/mobile/marine_dropship/proc/find_hijack_queen()
 	var/mob/existing_allied_queen = boarded_allied_queen?.resolve()
 	for(var/area/checked_area in shuttle_areas)
@@ -178,24 +178,24 @@
 				continue
 			if(checked_queen.hive?.need_round_end_check && !checked_queen.hive.can_delay_round_end())
 				continue // Not a hive that can hijack
-			if(checked_queen.hive?.faction_is_ally(FACTION_MARINE, TRUE))
+			if(checked_queen.hive?.faction_is_ally(faction, TRUE))
 				continue // Technically included in above for corrupted but really don't want an ally to hijack
-			if(FACTION_MARINE in checked_queen.iff_tag?.faction_groups)
+			if(faction in checked_queen.iff_tag?.faction_groups)
 				continue
 			if(checked_queen == existing_allied_queen)
 				continue // She was allied when boarding
 			return checked_queen
 	return null
 
-/// Searches the shuttle_areas for a non-dead, USCM-allied or USCM-iff tagged queen and returns her (or null)
+/// Returns a living queen allied to this dropship's faction.
 /obj/docking_port/mobile/marine_dropship/proc/find_allied_queen()
 	for(var/area/checked_area in shuttle_areas)
 		for(var/mob/living/carbon/xenomorph/queen/checked_queen in checked_area)
 			if(checked_queen.stat == DEAD)
 				continue
-			if(checked_queen.hive?.faction_is_ally(FACTION_MARINE, TRUE))
+			if(checked_queen.hive?.faction_is_ally(faction, TRUE))
 				return checked_queen
-			if(FACTION_MARINE in checked_queen.iff_tag?.faction_groups)
+			if(faction in checked_queen.iff_tag?.faction_groups)
 				return checked_queen
 	return null
 
@@ -207,7 +207,7 @@
 	if(SSticker.mode?.is_in_endgame)
 		return FALSE
 
-	if(GLOB.master_mode != GAMEMODE_DISTRESS_SIGNAL)
+	if(!(GLOB.master_mode in list(GAMEMODE_DISTRESS_SIGNAL, GAMEMODE_UPP_DISTRESS_SIGNAL)))
 		return FALSE
 
 	if(mode != SHUTTLE_CALL)
@@ -275,7 +275,7 @@
 
 	if(automated_hangar_id && automated_lz_id && automated_delay && !automated_timer && mode == SHUTTLE_IDLE)
 		var/obj/docking_port/stationary/marine_dropship/docked_at = get_docked()
-		if(faction == FACTION_MARINE)
+		if(faction == SSmapping.get_main_faction())
 			ai_silent_announcement("The [name] will automatically depart from [docked_at.name] in [automated_delay * 0.1] seconds.")
 
 		automated_timer = addtimer(CALLBACK(src, PROC_REF(automated_fly)), automated_delay, TIMER_STOPPABLE)
@@ -292,7 +292,7 @@
 	var/obj/docking_port/stationary/marine_dropship/docked_at = get_docked()
 	var/target_id = (docked_at?.id == automated_hangar_id) ? automated_lz_id : automated_hangar_id
 	SSshuttle.moveShuttle(id, target_id, TRUE)
-	if(faction == FACTION_MARINE)
+	if(faction == SSmapping.get_main_faction())
 		ai_silent_announcement("Dropship '[name]' departing from [docked_at.name].")
 
 /obj/docking_port/stationary/marine_dropship
@@ -341,7 +341,7 @@
 
 	for(var/area/checked_area in dropship.shuttle_areas)
 		for(var/mob/living/carbon/xenomorph/checked_xeno in checked_area)
-			if(checked_xeno.stat == DEAD || (FACTION_MARINE in checked_xeno.iff_tag?.faction_groups))
+			if(checked_xeno.stat == DEAD || (dropship.faction in checked_xeno.iff_tag?.faction_groups))
 				continue
 			var/name = "Unidentified Lifesigns"
 			var/input = "Unidentified lifesigns detected onboard. Recommendation: lockdown of exterior access ports, including ducting and ventilation."
@@ -360,10 +360,20 @@
 	id = DROPSHIP_LZ1
 	auto_open = TRUE
 
+/obj/docking_port/stationary/marine_dropship/lz1/Initialize(mapload)
+	. = ..()
+	if(SSmapping.get_main_faction() == FACTION_UPP)
+		faction = FACTION_UPP
+
 /obj/docking_port/stationary/marine_dropship/lz2
 	name = "LZ2 Landing Zone"
 	id = DROPSHIP_LZ2
 	auto_open = TRUE
+
+/obj/docking_port/stationary/marine_dropship/lz2/Initialize(mapload)
+	. = ..()
+	if(SSmapping.get_main_faction() == FACTION_UPP)
+		faction = FACTION_UPP
 
 /obj/docking_port/stationary/marine_dropship/almayer_hangar_1
 	name = "Almayer Hangar bay 1"
@@ -380,7 +390,7 @@
 /obj/docking_port/stationary/marine_dropship/upp/hangar_1
 	name = "Rostock Hangar bay 1"
 	id = UPP_DROPSHIP_LZ1
-	faction = "UPP"
+	faction = FACTION_UPP
 	auto_open = TRUE
 	roundstart_template = /datum/map_template/shuttle/morana
 

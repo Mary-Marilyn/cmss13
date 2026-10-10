@@ -274,7 +274,7 @@ GLOBAL_VAR_INIT(next_admin_bioscan, 30 MINUTES)
 	for(var/i in GLOB.alive_human_list)
 		var/mob/M = i
 		if(M.z && (M.z in z_levels) && !istype(M.loc, /turf/open/space) && !istype(M.loc, /area/adminlevel/ert_station/fax_response_station))
-			if(M.faction == FACTION_MARINE)
+			if(M.faction == FACTION_MAIN)
 				num_marines++
 
 	return num_marines

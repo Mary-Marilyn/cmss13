@@ -1209,7 +1209,7 @@ Additional game mode variables.
 	var/marine_pop_size = 0
 	var/uscm_personnel_count = 0
 	for(var/mob/living/carbon/human/human as anything in GLOB.alive_human_list)
-		if(human.faction == FACTION_MARINE)
+		if(human.faction == FACTION_MAIN)
 			uscm_personnel_count++
 			var/datum/job/job = GET_MAPPED_ROLE(human.job)
 			marine_pop_size += GLOB.RoleAuthority.calculate_role_weight(job)

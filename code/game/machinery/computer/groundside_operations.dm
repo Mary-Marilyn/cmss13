@@ -416,13 +416,21 @@
 			sourcemob.langchat_display_image(user)
 
 /obj/structure/machinery/computer/groundside_operations/upp
+	req_access = list(ACCESS_UPP_LEADERSHIP)
+	faction = FACTION_UPP
 	announcement_title = UPP_COMMAND_ANNOUNCE
 	announcement_faction = FACTION_UPP
 	add_pmcs = FALSE
 	lz_selection = FALSE
 	has_squad_overwatch = FALSE
 	minimap_type = MINIMAP_FLAG_UPP
+	minimap_flag = MINIMAP_FLAG_UPP
 	freq = UPP_FREQ
+
+/obj/structure/machinery/computer/groundside_operations/upp/Initialize()
+	if(FACTION_MAIN == FACTION_UPP)
+		lz_selection = TRUE
+	return ..()
 
 /obj/structure/machinery/computer/groundside_operations/clf
 	announcement_title = CLF_COMMAND_ANNOUNCE

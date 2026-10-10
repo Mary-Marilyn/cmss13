@@ -645,6 +645,96 @@
 	name = "Press Fax Responder late join"
 	job = JOB_FAX_RESPONDER_PRESS
 
+//****************************************** UPP ************************************************//
+/obj/effect/landmark/start/upp
+	name = "UPP start join"
+	icon_state = "base_upp"
+
+/obj/effect/landmark/start/upp/soldier
+	name = "UPP Soldier"
+	// Doctors and junior officers share the soldiers' cryopods.
+	job_list = list(/datum/job/antag/upp/rifleman, /datum/job/antag/upp/sapper, /datum/job/antag/upp/medic, /datum/job/antag/upp/machinegunner, /datum/job/antag/upp/leader, /datum/job/antag/upp/doctor, /datum/job/antag/upp/officer/junior)
+
+/obj/effect/landmark/start/upp/police
+	name = "UPP Police"
+	job = /datum/job/antag/upp/military_police
+
+/obj/effect/landmark/start/upp/logi
+	name = "UPP Logi"
+	job = /datum/job/antag/upp/supply
+
+/obj/effect/landmark/start/upp/dzho_automaton
+	name = "Dzho Automaton"
+	job = /datum/job/antag/upp/dzho_automaton
+
+/obj/effect/landmark/start/upp/pilot
+	name = "UPP Pilot"
+	job = /datum/job/antag/upp/pilot
+
+/obj/effect/landmark/start/upp/synth
+	name = "UPP Support Synth"
+	job = /datum/job/antag/upp/synth
+
+/obj/effect/landmark/start/upp/xo
+	name = "UPP XO"
+	job = /datum/job/antag/upp/officer/kapitan
+
+/obj/effect/landmark/start/upp/co
+	name = "UPP CO"
+	job = /datum/job/antag/upp/officer/co_whitelist
+
+/obj/effect/landmark/start/upp/polcom
+	name = "UPP Commissar"
+	job = /datum/job/antag/upp/commisar
+
+/obj/effect/landmark/start/upp/srlt
+	name = "UPP SO"
+	job = /datum/job/antag/upp/officer/senior
+
+/obj/effect/landmark/late_join/upp
+	name = "UPP late join"
+	icon_state = "late_join_upp"
+
+/obj/effect/landmark/late_join/upp/soldier
+	name = "UPP Soldier late join"
+	job_list = list(JOB_UPP, JOB_UPP_ENGI, JOB_UPP_MEDIC, JOB_UPP_SPECIALIST, JOB_UPP_LEADER, JOB_UPP_LT_DOKTOR, JOB_UPP_LT_OFFICER)
+
+/obj/effect/landmark/late_join/upp/dzho_automaton
+	name = "dzho automaton late join"
+	job = JOB_UPP_JOE
+
+/obj/effect/landmark/late_join/upp/synth
+	name = "UPP Support Synth late join"
+	job = JOB_UPP_SUPPORT_SYNTH
+
+/obj/effect/landmark/late_join/upp/xo
+	name = "UPP XO late join"
+	job = JOB_UPP_KPT_OFFICER
+
+/obj/effect/landmark/late_join/upp/co
+	name = "UPP CO late join"
+	job = JOB_UPP_CO_OFFICER
+
+/obj/effect/landmark/late_join/upp/polcom
+	name = "UPP Commissar late join"
+	job = JOB_UPP_COMMISSAR
+
+/obj/effect/landmark/late_join/upp/srlt
+	name = "UPP SO"
+	job = JOB_UPP_SRLT_OFFICER
+
+/obj/effect/landmark/late_join/upp/police
+	name = "UPP Police late join"
+	job = JOB_UPP_POLICE
+
+/obj/effect/landmark/late_join/upp/logi
+	name = "UPP Logi"
+	job = JOB_UPP_SUPPLY
+
+/obj/effect/landmark/late_join/upp/pilot
+	name = "UPP Pilot late join"
+	job = JOB_UPP_PILOT
+
 //****************************************** STATIC COMMS ************************************************//
 /obj/effect/landmark/static_comms
 	name = "static comms"

@@ -98,6 +98,7 @@
 #include "timer_sanity.dm"
 #include "toggle_crest.dm"
 #include "tutorials.dm"
+#include "upp_distress.dm"
 #include "weed_tests.dm"
 #include "xeno_strains.dm"
 #include "movement\collisions_can_pass_flags.dm"
