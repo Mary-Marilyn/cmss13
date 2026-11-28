@@ -60,6 +60,8 @@
 
 /obj/structure/machinery/defenses/sentry/Initialize()
 	. = ..()
+	if(ammo && !(ammo.flags_atom & INITIALIZED))
+		SSatoms.InitAtom(ammo)
 	spark_system = new /datum/effect_system/spark_spread
 	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)

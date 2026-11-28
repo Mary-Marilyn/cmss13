@@ -504,6 +504,10 @@ GLOBAL_LIST_INIT(allowed_helmet_items, list(
 	camera = new /obj/structure/machinery/camera/overwatch(src)
 	camera.owner_factions = camera_factions
 
+	for(var/obj/visor as anything in (built_in_visors + inserted_visors))
+		if(!(visor.flags_atom & INITIALIZED))
+			SSatoms.InitAtom(visor)
+
 	for(var/obj/visor as anything in built_in_visors)
 		visor.forceMove(src)
 

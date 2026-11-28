@@ -23,6 +23,8 @@ SUBSYSTEM_DEF(assets)
 
 /datum/controller/subsystem/assets/Initialize()
 	for(var/type in typesof(/datum/asset))
+		if(type == /datum/asset/spritesheet/vending_products && GLOB.master_mode == GAMEMODE_FORWARD_BASE)
+			continue
 		var/datum/asset/A = type
 		if(type != initial(A._abstract))
 			get_asset_datum(type)
