@@ -202,15 +202,15 @@
 /datum/action/xeno_action/activable/acid_barrage/use_ability(atom/target)
 	. = ..()
 	var/mob/living/carbon/xenomorph/despoiler/xeno = owner
+	if(length(timers))
+		return
+
 	if(!action_cooldown_check())
 		to_chat(xeno, SPAN_WARNING("We must wait for our spit glands to refill."))
 		return
 
 	if(!check_and_use_plasma_owner())
 		return
-
-	// Prevent some mouse down shenangians
-	apply_cooldown()
 
 	to_chat(owner, SPAN_XENOHIGHDANGER("We slow down as we begin charging a barrage of acid!"))
 	start_time = world.time
@@ -240,8 +240,7 @@
 
 /datum/action/xeno_action/activable/acid_barrage/proc/release_barrage(atom/source, atom/target, turf, skin_ctl, params)
 	SIGNAL_HANDLER
-	// The real cooldown starts here
-	apply_cooldown_override(xeno_cooldown)
+	apply_cooldown()
 	for(var/timer in timers)
 		deltimer(timer)
 	timers.Cut()
