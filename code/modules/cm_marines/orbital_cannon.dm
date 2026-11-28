@@ -42,6 +42,8 @@ GLOBAL_LIST(ob_type_fuel_requirements)
 			amt = pick_n_take(L)
 			GLOB.ob_type_fuel_requirements += amt
 
+/obj/structure/orbital_cannon/Initialize()
+	. = ..()
 	var/turf/T = locate(x+1,y+2,z)
 	var/obj/structure/orbital_tray/O = new(T)
 	tray = O
