@@ -733,7 +733,7 @@
 /turf/open/shuttle/dropship/midway/basic,
 /area/shuttle/multiz/drop_midway/midway)
 "Dw" = (
-/obj/effect/attach_point/crew_weapon/dropship1{
+/obj/effect/attach_point/crew_weapon/dropship_midway{
 	pixel_y = 16
 	},
 /obj/structure/pipes/vents/dropship/panel_half{

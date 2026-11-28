@@ -647,6 +647,7 @@
 	var/direction = "aft"
 	var/busy = FALSE
 	var/broken = FALSE
+	var/list/ramp_timers = list()
 	var/obj/deployer/shuttle/dropship/dummy_part/rampazoid
 	var/obj/effect/drosphip_ramp_shadow/linked_shadow
 
@@ -690,7 +691,16 @@
 		linked_single_controller.control_doors("open")
 
 /obj/structure/machinery/door_control/shuttle_ramp/proc/raise(forced = FALSE)
-	if(linked_single_controller?.status == SHUTTLE_DOOR_LOCKED || busy || is_reserved_level(src.z))
+	if(forced)
+		for(var/timer_id in ramp_timers)
+			deltimer(timer_id)
+		ramp_timers.Cut()
+		if(!linked_single_controller)
+			return
+	else if(linked_single_controller?.status == SHUTTLE_DOOR_LOCKED || busy)
+		return
+	if(is_reserved_level(z))
+		set_transit_ramp(FALSE)
 		return
 	busy = TRUE
 
@@ -709,9 +719,9 @@
 		raise_ramp(second_ramps)
 		raise_ramp(first_ramps, TRUE)
 	else
-		addtimer(CALLBACK(src, PROC_REF(raise_ramp), third_ramps), 2.5 SECONDS) // TIMER_UNIQUE|TIMER_OVERRIDE|TIMER_NO_HASH_WAIT
-		addtimer(CALLBACK(src, PROC_REF(raise_ramp), second_ramps), 5 SECONDS)
-		addtimer(CALLBACK(src, PROC_REF(raise_ramp), first_ramps, TRUE), 5 SECONDS)
+		ramp_timers += addtimer(CALLBACK(src, PROC_REF(raise_ramp), third_ramps), 2.5 SECONDS, TIMER_STOPPABLE)
+		ramp_timers += addtimer(CALLBACK(src, PROC_REF(raise_ramp), second_ramps), 5 SECONDS, TIMER_STOPPABLE)
+		ramp_timers += addtimer(CALLBACK(src, PROC_REF(raise_ramp), first_ramps, TRUE), 5 SECONDS, TIMER_STOPPABLE)
 
 /obj/structure/machinery/door_control/shuttle_ramp/proc/raise_forced()
 	raise(forced = TRUE)
@@ -725,6 +735,8 @@
 /obj/structure/machinery/door_control/shuttle_ramp/proc/raise_ramp(list/ramp_group, finality = FALSE)
 	var/turf/open/our_turf
 	for(rampazoid in ramp_group)
+		if(!rampazoid.lowered)
+			continue
 		our_turf = rampazoid.loc
 
 		if(rampazoid.linked_deployable)
@@ -735,14 +747,20 @@
 			beneath.ScrapeAway()
 		else
 			our_turf.ScrapeAway()
+		rampazoid.lowered = FALSE
 		our_turf.update_vis_contents()
 		raise_things(rampazoid)
 	if(finality)
 		busy = FALSE
+		ramp_timers.Cut()
 		linked_single_controller.status = SHUTTLE_DOOR_LOCKED
 
 /obj/structure/machinery/door_control/shuttle_ramp/proc/lower()
-	if(linked_single_controller?.status == SHUTTLE_DOOR_UNLOCKED || busy || is_reserved_level(src.z) || linked_dropship.is_hijacked)
+	if(linked_single_controller?.status == SHUTTLE_DOOR_UNLOCKED || busy || linked_dropship.is_hijacked)
+		return
+	if(is_reserved_level(z))
+		if(linked_dropship.mode == SHUTTLE_CALL && linked_dropship.paradrop_signal)
+			set_transit_ramp(TRUE)
 		return
 
 	busy = TRUE
@@ -757,9 +775,24 @@
 		railme.close()
 	lower_ramp(first_ramps)
 	lower_ramp(second_ramps)
-	addtimer(CALLBACK(src, PROC_REF(lower_ramp), third_ramps), 2.5 SECONDS) // TIMER_UNIQUE|TIMER_OVERRIDE|TIMER_NO_HASH_WAIT
-	addtimer(CALLBACK(src, PROC_REF(lower_ramp), fourth_ramps), 5 SECONDS)
-	addtimer(CALLBACK(src, PROC_REF(lower_ramp), fifth_ramps, TRUE), 5 SECONDS)
+	ramp_timers += addtimer(CALLBACK(src, PROC_REF(lower_ramp), third_ramps), 2.5 SECONDS, TIMER_STOPPABLE)
+	ramp_timers += addtimer(CALLBACK(src, PROC_REF(lower_ramp), fourth_ramps), 5 SECONDS, TIMER_STOPPABLE)
+	ramp_timers += addtimer(CALLBACK(src, PROC_REF(lower_ramp), fifth_ramps, TRUE), 5 SECONDS, TIMER_STOPPABLE)
+
+/obj/structure/machinery/door_control/shuttle_ramp/proc/set_transit_ramp(opened)
+	playsound(loc, 'sound/machines/omaha_ramp.ogg', 50, FALSE)
+	for(var/obj/structure/machinery/door/poddoor/railing/railing in linked_railings)
+		if(opened)
+			railing.close()
+		else
+			railing.open(TRUE)
+	for(var/obj/deployer/shuttle/dropship/dummy_part/ramp in first_ramps + second_ramps + third_ramps + fourth_ramps)
+		var/turf/ramp_turf = get_turf(ramp)
+		if(opened)
+			ramp_turf.place_on_top(linked_dropship.get_transit_path_type())
+		else if(istype(ramp_turf, /turf/open/space/transit))
+			ramp_turf.ScrapeAway()
+	linked_single_controller.status = opened ? SHUTTLE_DOOR_UNLOCKED : SHUTTLE_DOOR_LOCKED
 
 /obj/structure/machinery/door_control/shuttle_ramp/proc/lower_ramp(list/ramp_group, finality = FALSE)
 	var/turf/open/our_turf
@@ -774,7 +807,10 @@
 			rampazoid.cached_icon_state = "[our_turf.icon_state]-low"
 
 		if(rampazoid.mode == "fifth")
-			turf_beneath.place_on_top(rampazoid.deployable)
+			var/list/preserved_baseturfs = list()
+			preserved_baseturfs.Add(turf_beneath.baseturfs)
+			preserved_baseturfs += turf_beneath.type
+			turf_beneath.ChangeTurf(rampazoid.deployable, preserved_baseturfs)
 			rampazoid.linked_deployable = new rampazoid.deployable2(our_turf)
 			for(var/mob/living/carbon/morbius in our_turf.contents)
 				rampazoid.loc.Entered(morbius)
@@ -783,6 +819,7 @@
 				rampazoid.linked_deployable = new rampazoid.deployable2(turf_beneath)
 			lower_things(rampazoid)
 			our_turf.place_on_top(rampazoid.deployable)
+		rampazoid.lowered = TRUE
 
 		if(rampazoid.linked_deployable)
 			rampazoid.linked_deployable.icon = rampazoid.cached_icon
@@ -790,6 +827,7 @@
 
 	if(finality)
 		busy = FALSE
+		ramp_timers.Cut()
 		if(broken)
 			linked_single_controller.status = SHUTTLE_DOOR_BROKEN
 		else
