@@ -526,7 +526,7 @@
 /area/shuttle/multiz/drop_omaha/omaha)
 "tF" = (
 /obj/structure/machinery/door/airlock/hatch/side_hatch/omaha{
-	id = "port_door";
+	id = "starboard_door";
 	name = "omaha starboard access"
 	},
 /turf/open/shuttle/dropship/omaha/grated,

@@ -240,6 +240,7 @@
 	icon = 'icons/turf/floors/floors.dmi'
 	icon_state = "noop"
 	var/mode = ""
+	var/lowered = FALSE
 	opacity = FALSE
 	density = FALSE
 	invisibility = 101

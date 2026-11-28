@@ -297,7 +297,7 @@ GLOBAL_LIST_INIT_TYPED(huds, /datum/mob_hud, flatten_numeric_alist(alist(
 	if(length(registered_dropship_areas))
 		return
 	registered_dropship_areas = list()
-	var/static/list/dropship_area_typecache = typecacheof(list(/area/shuttle/drop1, /area/shuttle/drop2))
+	var/static/list/dropship_area_typecache = typecacheof(list(/area/shuttle/drop1, /area/shuttle/drop2, /area/shuttle/multiz/drop_omaha, /area/shuttle/multiz/drop_midway))
 	for(var/area/checked_area as anything in GLOB.all_areas)
 		if(!is_type_in_typecache(checked_area, dropship_area_typecache))
 			continue
@@ -314,8 +314,7 @@ GLOBAL_LIST_INIT_TYPED(huds, /datum/mob_hud, flatten_numeric_alist(alist(
 	var/client/user_client = user.client
 	if(!user_client || user == target)
 		return
-	// Only show HUD if user is in either the Alamo or Normandy
-	var/static/list/allowed_areas = list(/area/shuttle/drop1, /area/shuttle/drop2)
+	var/static/list/allowed_areas = list(/area/shuttle/drop1, /area/shuttle/drop2, /area/shuttle/multiz/drop_omaha, /area/shuttle/multiz/drop_midway)
 	if(!is_type_in_list(get_area(user), allowed_areas))
 		return
 	// Do not show overlays if the target is also in a dropship area
@@ -1176,7 +1175,7 @@ GLOBAL_DATUM_INIT(hud_icon_new_player_3, /image, image('icons/mob/hud/hud.dmi', 
 			hud_list[icon_state].icon_state = icon_state
 
 /mob/living/proc/is_in_dropship_hud_area(atom/location = src)
-	var/static/list/allowed_areas = list(/area/shuttle/drop1, /area/shuttle/drop2)
+	var/static/list/allowed_areas = list(/area/shuttle/drop1, /area/shuttle/drop2, /area/shuttle/multiz/drop_omaha, /area/shuttle/multiz/drop_midway)
 	return is_type_in_list(get_area(location), allowed_areas)
 
 /mob/living/proc/refresh_dropship_hud()

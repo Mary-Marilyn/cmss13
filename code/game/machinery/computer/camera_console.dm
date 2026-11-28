@@ -388,7 +388,7 @@
 	name = "Dropship Security Cameras Console"
 	icon_state = "security_cam"
 	density = FALSE
-	network = list(CAMERA_NET_ALAMO, CAMERA_NET_NORMANDY)
+	network = list(CAMERA_NET_ALAMO, CAMERA_NET_NORMANDY, CAMERA_NET_OMAHA, CAMERA_NET_MIDWAY)
 
 /obj/structure/machinery/computer/cameras/containment
 	name = "Containment Cameras"
