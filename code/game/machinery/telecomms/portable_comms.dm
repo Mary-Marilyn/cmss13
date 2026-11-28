@@ -51,6 +51,8 @@
 	var/last_drain_time = 0
 
 /obj/structure/machinery/telecomms/relay/preset/tower/portable/Initialize(mapload, ...)
+	if(istype(SSticker.mode, /datum/game_mode/colonialmarines/forward_base))
+		freq_listening |= PUB_FREQ
 	LAZYADD(component_parts, new /obj/item/cell(src))
 	LAZYADD(component_parts, new /obj/item/cell(src))
 	return ..()
