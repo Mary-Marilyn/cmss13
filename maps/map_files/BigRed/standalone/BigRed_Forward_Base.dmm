@@ -912,6 +912,17 @@
 	},
 /turf/open/floor/almayer/plate,
 /area/forward_base/squads/alpha_bravo_shared)
+"cF" = (
+/obj/docking_port/stationary/marine_dropship/lz1{
+	id = "bigred-fb-hangar";
+	name = "LZ1: Communications Landing Zone";
+	width = 17;
+	height = 24;
+	dwidth = 8;
+	dheight = 12
+	},
+/turf/open/floor/plating,
+/area/forward_base/underdeck/hangar)
 "cG" = (
 /obj/structure/disposaloutlet,
 /obj/structure/disposalpipe/trunk{
@@ -11769,13 +11780,6 @@
 "Jt" = (
 /obj/structure/machinery/landinglight/delayone,
 /turf/open/floor/plating/plating_catwalk,
-/area/forward_base/underdeck/hangar)
-"Ju" = (
-/obj/docking_port/stationary/marine_dropship/lz1{
-	id = "bigred-fb-hangar";
-	name = "LZ1: Communications Landing Zone"
-	},
-/turf/open/floor/plating,
 /area/forward_base/underdeck/hangar)
 "Jv" = (
 /obj/structure/machinery/landinglight/delayone{
@@ -68245,8 +68249,8 @@ Ih
 Ih
 Ih
 Ih
+cF
 Ih
-Ju
 Ih
 Ih
 Ih

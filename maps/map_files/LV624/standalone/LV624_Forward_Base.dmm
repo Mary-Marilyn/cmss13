@@ -2469,6 +2469,17 @@
 /obj/effect/landmark/start/marine/medic/bravo,
 /turf/open/floor/almayer/plate,
 /area/forward_base/lv624/preps/corpsman/cryo)
+"hx" = (
+/obj/docking_port/stationary/marine_dropship/lz2{
+	id = "lv624-fb-hangar";
+	name = "LZ2: Forward Base Landing Pad";
+	width = 17;
+	height = 24;
+	dwidth = 8;
+	dheight = 12
+	},
+/turf/open/floor/plating,
+/area/forward_base/lv624/landing_zones/lz2)
 "hy" = (
 /obj/effect/landmark/lv624/fog_blocker/short,
 /turf/open/gm/river,
@@ -6631,13 +6642,6 @@
 /obj/effect/landmark/lv624/fog_blocker/short,
 /turf/open/gm/dirt,
 /area/lv624/ground/jungle/north_west_jungle)
-"sd" = (
-/obj/docking_port/stationary/marine_dropship/lz2{
-	id = "lv624-fb-hangar";
-	name = "LZ2: Forward Base Landing Pad"
-	},
-/turf/open/floor/plating,
-/area/forward_base/lv624/landing_zones/lz2)
 "se" = (
 /turf/open/floor/warning/north,
 /area/forward_base/lv624/landing_zones/lz2)
@@ -23376,7 +23380,7 @@ pV
 pV
 pV
 pV
-sd
+hx
 pV
 pV
 pV

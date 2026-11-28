@@ -6273,6 +6273,17 @@
 /obj/structure/flora/jungle/vines/light_1,
 /turf/open/auto_turf/tyrargo_grass/layer1,
 /area/forward_base/lv624/tent_camp/lv1021)
+"oA" = (
+/obj/docking_port/stationary/marine_dropship/lz1{
+	id = "falcons-fury-fb-hangar";
+	name = "LZ1: Forward Base Landing Zone";
+	width = 17;
+	height = 24;
+	dwidth = 8;
+	dheight = 12
+	},
+/turf/open/gm/dirt/dark_brown,
+/area/forward_base/underdeck/hangar/lv1021)
 "oB" = (
 /obj/item/prop/magazine/boots/n131{
 	pixel_x = -1;
@@ -8360,13 +8371,6 @@
 /area/forward_base/underdeck/hangar/lv1021)
 "vv" = (
 /turf/open/gm/dirt/dark_brown/variant_5/west,
-/area/forward_base/underdeck/hangar/lv1021)
-"vw" = (
-/obj/docking_port/stationary/marine_dropship/lz1{
-	id = "falcons-fury-fb-hangar";
-	name = "LZ1: Forward Base Landing Zone"
-	},
-/turf/open/gm/dirt/dark_brown,
 /area/forward_base/underdeck/hangar/lv1021)
 "vx" = (
 /obj/effect/decal/strata_decals/mud_corner{
@@ -53486,7 +53490,7 @@ uC
 uC
 uC
 uC
-vw
+oA
 uC
 uC
 uC

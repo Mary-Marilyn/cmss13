@@ -8477,6 +8477,17 @@
 "wW" = (
 /turf/open/floor/kutjevo/plate,
 /area/kutjevo/exterior/telecomm/lz2_north)
+"wX" = (
+/obj/docking_port/stationary/marine_dropship/lz2{
+	id = "kutjevo-fb-hangar";
+	name = "LZ2: Forward Base Landing Pad";
+	width = 17;
+	height = 24;
+	dwidth = 8;
+	dheight = 12
+	},
+/turf/open/floor/plating,
+/area/forward_base/underdeck/hangar)
 "zF" = (
 /turf/closed/wall/almayer/outer/internal,
 /area/sky)
@@ -10911,13 +10922,6 @@
 "Gf" = (
 /obj/structure/machinery/landinglight/delayone,
 /turf/open/floor/plating/plating_catwalk,
-/area/forward_base/underdeck/hangar)
-"Gg" = (
-/obj/docking_port/stationary/marine_dropship/lz2{
-	id = "kutjevo-fb-hangar";
-	name = "LZ2: Forward Base Landing Pad"
-	},
-/turf/open/floor/plating,
 /area/forward_base/underdeck/hangar)
 "Gh" = (
 /obj/structure/machinery/landinglight/delayone{
@@ -58865,8 +58869,8 @@ EU
 EU
 EU
 EU
+wX
 EU
-Gg
 EU
 EU
 EU

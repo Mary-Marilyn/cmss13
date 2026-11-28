@@ -80,7 +80,18 @@
 	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(xeno_announcement), "The mist is almost gone. In one minute, the tallhosts will be exposed. Gather yourselves and prepare to tear their nest apart.", "everything", QUEEN_MOTHER_ANNOUNCE), FORWARD_BASE_FOG_DURATION - FORWARD_BASE_FOG_WARNING - ROUND_TIME)
 	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(marine_announcement), "WARNING. HOSTILE CONTACT IMMINENT. Atmospheric obscuration is rapidly dissipating and will be lost within sixty seconds. ALL COMBAT PERSONNEL, assume defensive positions immediately.", "BASE PERIMETER ALERT", 'sound/effects/siren.ogg'), FORWARD_BASE_FOG_DURATION - FORWARD_BASE_FOG_WARNING - ROUND_TIME)
 	var/obj/docking_port/stationary/marine_dropship/landing_zone = SSshuttle.getDock(active_lz.linked_lz)
-	SSshuttle.action_load(SSmapping.all_shuttle_templates[/datum/map_template/shuttle/normandy], landing_zone)
+	for(var/obj/docking_port/stationary/marine_dropship/landing_port in SSshuttle.stationary)
+		if(!is_ground_level(landing_port.z))
+			continue
+		// Midway's ramp lowers to the mapped pad, one floor below its cabin.
+		var/turf/cabin_level = SSmapping.get_turf_above(get_turf(landing_port))
+		landing_port.forceMove(cabin_level)
+		landing_port.area_type = cabin_level.loc.type
+		landing_port.width = landing_zone.width
+		landing_port.height = landing_zone.height
+		landing_port.dwidth = landing_zone.dwidth
+		landing_port.dheight = landing_zone.dheight
+	SSshuttle.action_load(SSmapping.all_shuttle_templates[/datum/map_template/shuttle/midway], landing_zone)
 	for(var/obj/structure/machinery/computer/shuttle/dropship/flight/console in GLOB.machines)
 		console.time_lock = FORWARD_BASE_FOG_DURATION
 
@@ -96,6 +107,11 @@
 		return
 	clear_proximity_resin()
 	marine_announcement("WARNING. PERIMETER DECONTAMINATION ACTIVE. C10-W weedkiller is being dispersed around the base perimiter.", "BASE PERIMETER ALERT", 'sound/effects/rocketpod_fire.ogg')
+
+/datum/game_mode/colonialmarines/forward_base/get_valid_sentry_turfs(left, bottom, z, width, height, list/structures_to_ignore)
+	// Midway's landing surface is below the raised docking port.
+	var/turf/landing_surface = SSmapping.get_turf_below(locate(left, bottom, z))
+	return ..(left, bottom, landing_surface.z, width, height, structures_to_ignore)
 
 /datum/game_mode/colonialmarines/forward_base/spawn_lz_sentry(turf/target, list/structures_to_break)
 	var/obj/structure/machinery/sentry_holder/landing_zone/forward_base/holder = new(target)

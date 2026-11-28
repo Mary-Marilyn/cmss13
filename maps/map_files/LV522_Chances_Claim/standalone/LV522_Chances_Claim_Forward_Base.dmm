@@ -4449,6 +4449,16 @@
 /obj/structure/closet/secure_closet/guncabinet/red/cic_armory_mk1_rifle,
 /turf/open/floor/almayer/cargo,
 /area/forward_base/chances/command/cic)
+"kr" = (
+/obj/docking_port/stationary/marine_dropship/lz1{
+	id = "chances-claim-fb-hangar";
+	width = 17;
+	height = 24;
+	dwidth = 8;
+	dheight = 12
+	},
+/turf/open/floor/plating,
+/area/forward_base/chances/underdeck/hangar)
 "ks" = (
 /turf/closed/wall/almayer/reinforced,
 /area/forward_base/chances/squads/lower)
@@ -12375,12 +12385,6 @@
 	dir = 4
 	},
 /turf/open/floor/plating/plating_catwalk,
-/area/forward_base/chances/underdeck/hangar)
-"Jw" = (
-/obj/docking_port/stationary/marine_dropship/lz1{
-	id = "chances-claim-fb-hangar"
-	},
-/turf/open/floor/plating,
 /area/forward_base/chances/underdeck/hangar)
 "Jx" = (
 /obj/effect/decal/cleanable/dirt{
@@ -60864,7 +60868,7 @@ Hz
 Hz
 Hz
 Hz
-Hz
+kr
 Hz
 Hz
 Hz
@@ -61070,7 +61074,7 @@ Hz
 Hz
 Hz
 Hz
-Jw
+Hz
 Hz
 HC
 Hz

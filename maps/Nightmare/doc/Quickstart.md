@@ -56,7 +56,7 @@ Set every tile you aren't using to `/turf/template_noop` and `/area/template_noo
 For making your life easier, copy the working parts from another FB map, like `maps/map_files/Kutjevo/standalone/Kutjevo_Forward_Base.dmm`, then arrange them to fit your base.
 
 - For indoor areas, only use areas under `/area/forward_base`
-- Copy the Normandy landing port and flight console. Put the console in a Forward Base area. Give the port a unique `id`, such as `bigred-fb-hangar`, and set the console's `linked_lz` to match.
+- Copy the Midway landing port and flight console from a working FB map. Place the port on the pad's floor; the mode moves it up one floor for Midway's cabin. Put the console in a Forward Base area. Give the port a unique `id`, such as `bigred-fb-hangar`, and set the console's `linked_lz` to match.
 - Copy the ASRS elevator and its off-map part. Keep their areas as `/area/supply/station/uscm` and `/area/supply/dock/uscm`
 
 ## 3. Mark where it loads
