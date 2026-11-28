@@ -1359,10 +1359,8 @@
 /turf/open/floor/hybrisa/wood/blackwood,
 /area/forward_base/medical/operating_room_one)
 "cI" = (
-/obj/structure/machinery/bioprinter{
-	stored_metal = 125
-	},
 /obj/effect/decal/cleanable/dirt,
+/obj/structure/machinery/gel_refiller,
 /turf/open/floor/hybrisa/wood/blackwood,
 /area/forward_base/medical/operating_room_one)
 "cJ" = (
@@ -1649,7 +1647,9 @@
 /turf/open/floor/hybrisa/wood/blackwood,
 /area/forward_base/medical/operating_room_one)
 "dl" = (
-/obj/structure/closet/secure_closet/medical2,
+/obj/structure/machinery/bioprinter{
+	stored_metal = 125
+	},
 /turf/open/floor/hybrisa/wood/blackwood,
 /area/forward_base/medical/operating_room_one)
 "dm" = (
@@ -1853,46 +1853,10 @@
 /turf/open/floor/hybrisa/wood/greywood,
 /area/forward_base/command/cic)
 "dI" = (
-/obj/structure/closet/crate/medical{
-	name = "medical crate (roller beds)"
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/roller{
-	pixel_y = 4
-	},
-/obj/item/storage/syringe_case,
-/obj/item/storage/syringe_case,
-/obj/item/storage/syringe_case,
-/obj/item/storage/syringe_case,
 /obj/structure/machinery/light{
 	dir = 8
 	},
+/obj/structure/closet/secure_closet/medical2,
 /turf/open/floor/interior/wood_sat,
 /area/forward_base/medical/lower_medical_lobby)
 "dJ" = (
