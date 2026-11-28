@@ -546,6 +546,9 @@
 		if("move")
 			if(!shuttle)
 				return FALSE
+			if(istype(SSticker.mode, /datum/game_mode/colonialmarines/forward_base) && !shuttle.canMove())
+				to_chat(user, SPAN_WARNING("The flight console has shorted out. The dropship cannot take off."))
+				return TRUE
 			if(shuttle.mode != SHUTTLE_IDLE && (shuttle.mode != SHUTTLE_CALL && !shuttle.destination))
 				to_chat(user, SPAN_WARNING("You can't move to a new destination right now."))
 				return TRUE

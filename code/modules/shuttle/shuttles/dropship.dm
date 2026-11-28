@@ -171,6 +171,10 @@
 /obj/docking_port/mobile/marine_dropship/canMove()
 	if(SShijack.withdrawal_end_time && is_mainship_level(z) && !withdrawal_launch_override)
 		return FALSE
+	if(istype(SSticker.mode, /datum/game_mode/colonialmarines/forward_base) && is_ground_level(z))
+		var/datum/hive_status/main_hive = GLOB.hive_datum[XENO_HIVE_NORMAL]
+		if(main_hive.see_humans_on_tacmap)
+			return FALSE
 	return ..()
 
 /obj/docking_port/mobile/marine_dropship/enterTransit()
@@ -391,7 +395,7 @@
 
 /obj/docking_port/mobile/marine_dropship/proc/automated_check()
 	var/obj/structure/machinery/computer/shuttle/dropship/flight/root_console = getControlConsole()
-	if(!root_console || root_console.dropship_control_lost || SShijack.in_ftl || SShijack.hijack_status >= HIJACK_OBJECTIVES_GROUND_CRASH)
+	if(!root_console || root_console.dropship_control_lost || !canMove() || SShijack.in_ftl || SShijack.hijack_status >= HIJACK_OBJECTIVES_GROUND_CRASH)
 		automated_hangar_id = null
 		automated_lz_id = null
 		automated_delay = null
@@ -409,7 +413,7 @@
 	if(!automated_hangar_id || !automated_lz_id || !automated_delay)
 		return
 	var/obj/structure/machinery/computer/shuttle/dropship/flight/root_console = getControlConsole()
-	if(root_console.dropship_control_lost)
+	if(root_console.dropship_control_lost || !canMove())
 		return
 	if(mode != SHUTTLE_IDLE)
 		return
